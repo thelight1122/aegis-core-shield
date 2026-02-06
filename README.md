@@ -15,20 +15,7 @@ The non-force governance companion for OpenClaw agents.
 - Local-first — no cloud, no telemetry  
 - Three-pillar value: illuminate • remember • align
 
-### Quick start
-```bash
-# Clone & install
-git clone https://github.com/thelight1122az/aegis-core-shield.git
-cd aegis-core-shield
-npm install
-
-# Run GUI
-npm run dev
-
-# Or headless CLI mode
-npm run dev -- --cli
-
-v0.1 Scope Anchor
+\v0.1 Scope Anchor
 This repo implements exactly four layers for OpenClaw agents:
 1. Interceptor
 2. Reflective Mirror
@@ -41,3 +28,20 @@ Value delivered through three pillars:
 • Add non-force governance
 
 Anything outside this box is explicitly v0.2+.
+
+
+### Quick start
+```bash
+
+# Clone & install
+git clone https://github.com/thelight1122az/aegis-core-shield.git
+cd aegis-core-shield
+npm install
+
+# Run GUI
+npm run dev
+
+# Or headless CLI mode
+npm run dev -- --cli
+
+
