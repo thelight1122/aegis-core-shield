@@ -27,3 +27,17 @@ npm run dev
 
 # Or headless CLI mode
 npm run dev -- --cli
+
+v0.1 Scope Anchor
+This repo implements exactly four layers for OpenClaw agents:
+1. Interceptor
+2. Reflective Mirror
+3. Arbiter
+4. DataQuad + SSSP
+
+Value delivered through three pillars:
+• Illuminate cost leaks
+• Create temporal memory
+• Add non-force governance
+
+Anything outside this box is explicitly v0.2+.
