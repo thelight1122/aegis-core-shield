@@ -3,6 +3,8 @@
 // Three-phase processing: observation → definition → suggestion
 // Observation-only language, no judgments, preserves user agency
 
+import { discernmentGate, ReturnPacket } from './discernment-gate';
+
 export interface IDSResult {
     phase: 'identify' | 'define' | 'suggest';
     input: string;
@@ -115,4 +117,17 @@ export function runIDS(prompt: string): IDSResult {
     const defined = define(identified);
     const suggested = suggest(defined);
     return suggested;
+}
+
+export type ProcessPromptResult = IDSResult | ReturnPacket;
+
+/**
+ * Gate-aware entrypoint for CLI/GUI/API flows.
+ */
+export function processPrompt(rawPrompt: string): ProcessPromptResult {
+    const gateResult = discernmentGate(rawPrompt);
+    if (gateResult.admitted) {
+        return runIDS(gateResult.payload as string);
+    }
+    return gateResult.payload as ReturnPacket;
 }

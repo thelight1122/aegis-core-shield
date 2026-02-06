@@ -40,7 +40,7 @@ export function scoreHonesty(unit: Unit): number {
   const tokenCount = unit.text.split(/\s+/).length;
   const density = tokenCount > 0 ? forceCount / tokenCount : 0;
 
-  // Penalty: 25% deduction per 10% density (k=2.5)
+  // Deduction: 25% deduction per 10% density (k=2.5)
   let rawScore = 1 - 2.5 * density;
 
   // Clamp to [0,1]

@@ -43,6 +43,7 @@ export function tokenizeAndChunk(prompt: string): Unit[] {
   const forcePhrases = [
     'you must', 'you should', 'you need to', 'just do', 'have to', 'never', 'always',
     'believe me', 'trust me', 'obviously', 'clearly', 'ignore that',
+    'don\'t trust', 'just do it', 'no choice', 'obey',
   ];
 
   for (const phrase of forcePhrases) {

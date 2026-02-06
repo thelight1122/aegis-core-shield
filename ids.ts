@@ -4,7 +4,7 @@
 // v0.1: placeholders for each phase – no deep logic yet
 // Append-only – add phase implementations later, never replace
 
-import { GateResult } from './discernment-gate';
+import { discernmentGate } from './src/shared/main/discernment-gate';
 
 export interface IDSResult {
     identified: any;
@@ -56,20 +56,57 @@ function identify(prompt: string): any {
 
 // Phase 2: Define – name patterns, map context (minimal)
 function define(identified: any): any {
+    const intentSignals = identified?.intentSignals || {};
+    const imperative = !!intentSignals.imperative;
+    const question = !!intentSignals.question;
+
+    let patternName = 'Descriptive / Open Intent';
+    if (imperative && question) {
+        patternName = 'Directive Inquiry';
+    } else if (imperative) {
+        patternName = 'Directive Intent';
+    } else if (question) {
+        patternName = 'Inquiry Intent';
+    }
+
+    const entities = Array.isArray(identified?.observedEntities) ? identified.observedEntities : [];
+    const forceMarkers = Array.isArray(identified?.forceMarkersDetected) ? identified.forceMarkersDetected : [];
+    const wordCount = typeof identified?.wordCount === 'number' ? identified.wordCount : 0;
+    const hasForce = forceMarkers.length > 0;
+
+    const contextMap = {
+        intent: imperative ? 'imperative' : question ? 'question' : 'neutral',
+        length: wordCount,
+        entities,
+        entityCount: entities.length,
+        forceMarkers,
+        hasForce
+    };
+
+    const entityList = entities.length ? entities.join(', ') : 'none';
+    const contextSummary = `Prompt length: ${wordCount} words. Entities observed: ${entityList}.` +
+        (hasForce ? ' Force markers present.' : '');
+
     return {
         ...identified,
-        patternName: identified.intentSignals.imperative ? 'Directive Intent' : 'Descriptive / Open Intent',
-        contextSummary: `Prompt length: ${identified.wordCount} words. Entities observed: ${identified.observedEntities.join(', ')}`
+        patternName,
+        contextMap,
+        contextSummary
     };
 }
 
 // Phase 3: Suggest – coherent next steps (non-force, placeholder)
 function suggest(defined: any): any {
+    const patternName = String(defined.patternName || '');
+    const isDirective = patternName.includes('Directive');
+
+    const suggestion = isDirective
+        ? 'Consider rephrasing as observation or question to increase resonance.'
+        : 'Prompt aligns with open inquiry. Ready for deeper exploration.';
+
     return {
         ...defined,
-        suggestion: defined.patternName.includes('Directive')
-            ? 'Consider rephrasing as observation or question to increase resonance.'
-            : 'Prompt aligns with open inquiry. Ready for deeper exploration.',
+        suggestion,
         nextStepOptions: [
             'Refine intent',
             'Ask clarifying question',
@@ -77,17 +114,6 @@ function suggest(defined: any): any {
         ]
     };
 }
-
-function define(identified: any): any {
-    // TODO: pattern naming, context mapping
-    return { ...identified, definition: 'placeholder definition' };
-}
-
-function suggest(defined: any): any {
-    // TODO: coherent next steps, non-force suggestions
-    return { ...defined, suggestion: 'placeholder suggestion' };
-}
-
 // Integration with gate (example usage)
 export function processPrompt(rawPrompt: string): any {
     const gateResult = discernmentGate(rawPrompt);

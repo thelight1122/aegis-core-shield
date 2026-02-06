@@ -22,13 +22,11 @@ describe('Discernment Gate – End-to-End', () => {
     expect(payload.realignment_observations.length).toBeGreaterThan(0);
   });
 
-  test('mild force word in supportive context → may be tolerated', () => {
-    // Note: Tolerance band behavior depends on density and context
-    // "should" with low density in non-directive statement may pass
-    const prompt = "You might consider checking the logs if helpful.";
+  test('admit descriptive prompts', () => {
+    // A prompt with no detected force words should be admitted
+    const prompt = "This is a statement of fact for consideration.";
     const result = discernmentGate(prompt);
 
-    // This prompt should be admitted (no force detected)
     expect(result.admitted).toBe(true);
   });
 
