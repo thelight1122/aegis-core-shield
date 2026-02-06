@@ -1,29 +1,54 @@
 # AEGIS Core Shield
 
-**Cheaper. Smarter. Safer. Without cages.**
+Non-force governance layer for OpenClaw agents.
 
-The non-force governance companion for OpenClaw agents.
+### What this is (v0.1 – foundational)
 
-### What it does
-1. **Illuminates cost leaks** — spots heartbeats, idle loops, context bloat before your bill explodes  
-2. **Gives agents temporal memory** — coherent state persists across restarts (DataQuad + SSSP)  
-3. **Adds gentle governance** — Interceptor gates risks, Arbiter seeks harmony, Mirror reflects patterns — all without force or limits
+A local sidecar that observes OpenClaw agent behavior through logs or piped events and applies four core layers:
 
-### Key features (v0.1)
-- Unlimited agents  
-- Desktop sidecar (GUI + CLI mode)  
-- Local-first — no cloud, no telemetry  
-- Three-pillar value: illuminate • remember • align
+1. Interceptor  
+   Evaluates incoming tool calls and events against simple coherence rules.  
+   Default: allow. Only spirals when clear incoherence patterns are matched.
 
-### Quick start
+2. Reflective Mirror  
+   Produces neutral, non-judgmental summaries of observed patterns after significant events or pauses.
+
+3. Arbiter  
+   Weighs decisions when multiple signals are present — seeks alignment, not majority or override.
+
+4. DataQuad + SSSP  
+   Appends compact, high-coherence state snapshots before pauses.  
+   Offers to resume from the last aligned snapshot (user decides).
+
+### What it currently can do
+
+- Detect certain repetitive or potentially wasteful patterns (e.g., frequent idle heartbeats)  
+- Flag unverified tool calls (if verification data is provided)  
+- Save per-agent state summaries locally  
+- Show basic reflections in GUI or CLI  
+- Pause for user review on matched conditions (no automatic blocking)
+
+### What it does not yet do
+
+- Automatically optimize token usage  
+- Proactively route to cheaper models  
+- Handle multiple OpenClaw instances simultaneously  
+- Provide swarm coordination  
+- Offer visual nebula or advanced dashboards (planned post-v0.1)
+
+### Principles (locked)
+
+- Unlimited agents — no artificial caps  
+- Local-first — zero cloud dependency, zero telemetry  
+- Non-force posture — default allow, gentle spiral on mismatch, pause always valid  
+- Append-only core logic — rules added, never replaced or erased
+
+### Quick Start
+
 ```bash
-# Clone & install
-git clone https://github.com/thelight1122az/aegis-core-shield.git
+git clone https://github.com/thelight1122/aegis-core-shield.git
 cd aegis-core-shield
 npm install
-
-# Run GUI
-npm run dev
-
-# Or headless CLI mode
-npm run dev -- --cli
+npm run dev                # GUI mode
+# or
+npm run dev -- --cli       # headless / terminal mode
