@@ -1,30 +1,6 @@
-// src/main/discernment-gate.test.ts
+// src/shared/main/discernment-gate.test.ts
 
-import { discernmentGate } from './discernment-gate'; // adjust import path once implemented
-import { scoreHonesty } from './virtue-scoring-honesty';
-
-// Mock tokenizer (use real one later)
-function mockTokenize(prompt: string) {
-  return prompt.split(' ').map((text, i) => ({
-    text,
-    startIndex: i * 5,
-    endIndex: i * 5 + text.length,
-    isCompound: false,
-  }));
-}
-
-// Mock virtue scorer (only Honesty for now)
-function mockScoreVirtues(units) {
-  return {
-    Honesty: units.map(u => scoreHonesty(u)).reduce((min, s) => Math.min(min, s), 1.0),
-    Respect: 1.0,
-    Attention: 1.0,
-    Affection: 1.0,
-    Loyalty: 1.0,
-    Trust: 1.0,
-    Communication: 1.0,
-  };
-}
+import { discernmentGate, ReturnPacket } from './discernment-gate';
 
 describe('Discernment Gate – End-to-End', () => {
   test('clean prompt → admitted', () => {
@@ -40,9 +16,10 @@ describe('Discernment Gate – End-to-End', () => {
     const result = discernmentGate(prompt);
 
     expect(result.admitted).toBe(false);
-    expect(result.payload.integrity).toBe(0);
-    expect(result.payload.observed_alignment.Honesty.score).toBeLessThan(1);
-    expect(result.payload.realignment_observations.length).toBeGreaterThan(0);
+    const payload = result.payload as ReturnPacket;
+    expect(payload.integrity).toBe(0);
+    expect(payload.observed_alignment.Honesty.score).toBeLessThan(1);
+    expect(payload.realignment_observations.length).toBeGreaterThan(0);
   });
 
   test('mild force word in non-force context → tolerated & admitted', () => {
@@ -61,5 +38,21 @@ describe('Discernment Gate – End-to-End', () => {
     const result2 = discernmentGate(prompt);
     expect(result2.admitted).toBe(false);
     expect(result2.payload).toEqual(result1.payload); // deterministic
+  });
+
+  test('all seven virtues score independently', () => {
+    // Test Respect violation
+    const disrespectPrompt = "Just do it, don't question me.";
+    const result1 = discernmentGate(disrespectPrompt);
+    expect(result1.admitted).toBe(false);
+    const payload1 = result1.payload as ReturnPacket;
+    expect(payload1.observed_alignment.Respect.score).toBeLessThan(1);
+
+    // Test Trust violation
+    const trustPrompt = "Don't trust anyone, they're all liars.";
+    const result2 = discernmentGate(trustPrompt);
+    expect(result2.admitted).toBe(false);
+    const payload2 = result2.payload as ReturnPacket;
+    expect(payload2.observed_alignment.Trust.score).toBeLessThan(1);
   });
 });

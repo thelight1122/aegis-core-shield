@@ -6,6 +6,14 @@
 
 import { Unit, tokenizeAndChunk } from './tokenization';
 import { scoreHonesty } from './virtue-scoring-honesty';
+import { scoreRespect } from './virtue-scoring-respect';
+import { scoreAttention } from './virtue-scoring-attention';
+import { scoreAffection } from './virtue-scoring-affection';
+import { scoreLoyalty } from './virtue-scoring-loyalty';
+import { scoreTrust } from './virtue-scoring-trust';
+import { scoreCommunication } from './virtue-scoring-communication';
+import { initGateLogger, logGateDecision, GateLogEntry } from './gate-logger';
+import * as crypto from 'crypto';
 
 export interface VirtueScores {
   Honesty: number;
@@ -15,6 +23,7 @@ export interface VirtueScores {
   Loyalty: number;
   Trust: number;
   Communication: number;
+  [key: string]: number;  // Allow indexing by string for logger compatibility
 }
 
 export interface GateResult {
@@ -49,15 +58,15 @@ export function discernmentGate(prompt: string): GateResult {
   // 2. Tokenize & unitize
   const units: Unit[] = tokenizeAndChunk(prompt);
 
-  // 3. Score virtues (only Honesty real; others mocked)
+  // 3. Score virtues (all seven now implemented)
   const rawScores: VirtueScores = {
     Honesty: Math.min(...units.map(u => scoreHonesty(u))),
-    Respect: 1.0,
-    Attention: 1.0,
-    Affection: 1.0,
-    Loyalty: 1.0,
-    Trust: 1.0,
-    Communication: 1.0,
+    Respect: Math.min(...units.map(u => scoreRespect(u))),
+    Attention: Math.min(...units.map(u => scoreAttention(u))),
+    Affection: Math.min(...units.map(u => scoreAffection(u))),
+    Loyalty: Math.min(...units.map(u => scoreLoyalty(u))),
+    Trust: Math.min(...units.map(u => scoreTrust(u))),
+    Communication: Math.min(...units.map(u => scoreCommunication(u))),
   };
 
   // 4. Apply tolerance band (treat near-1.0 as 1.0)
@@ -81,7 +90,16 @@ export function discernmentGate(prompt: string): GateResult {
       let minUnit = '(not located)';
       let minScore = 1.0;
       units.forEach(u => {
-        const uScore = virtue === 'Honesty' ? scoreHonesty(u) : 1.0;
+        let uScore = 1.0;
+        switch (virtue) {
+          case 'Honesty': uScore = scoreHonesty(u); break;
+          case 'Respect': uScore = scoreRespect(u); break;
+          case 'Attention': uScore = scoreAttention(u); break;
+          case 'Affection': uScore = scoreAffection(u); break;
+          case 'Loyalty': uScore = scoreLoyalty(u); break;
+          case 'Trust': uScore = scoreTrust(u); break;
+          case 'Communication': uScore = scoreCommunication(u); break;
+        }
         if (uScore < minScore) {
           minScore = uScore;
           minUnit = u.text;
@@ -105,30 +123,32 @@ export function discernmentGate(prompt: string): GateResult {
       virtues_affected: [f.virtue],
       observation: `score below threshold after tolerance (${f.score.toFixed(2)})`,
     })),
-    realignment_observations: fractureVirtues.map(f => 
+    realignment_observations: fractureVirtues.map(f =>
       `For ${f.virtue}: consider reviewing phrasing where minimum score occurred`
     ),
     original_prompt: prompt,
     action_taken: 'none – prompt not processed further',
   };
 
-  // 7. Append-only log (console for now – replace with file logger later)
-  console.log('[Gate Decision]', {
+  // 7. Append-only persistent log
+  const logEntry: GateLogEntry = {
     timestamp: new Date().toISOString(),
-    promptHash: simpleHash(prompt), // stub – implement real hash if needed
+    promptHash: createPromptHash(prompt),
     integrity,
-    returnPacket: integrity === 0 ? returnPacket : undefined,
-  });
+    admitted: false,
+    virtueScores: adjustedScores as Record<string, number>,
+    returnPacket,
+    logLevel: 'info',
+  };
+  logGateDecision(logEntry);
 
   return { admitted: false, payload: returnPacket };
 }
 
-// Simple hash stub for logging (replace with crypto later)
-function simpleHash(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash.toString(16);
+// Cryptographic hash for prompt logging (SHA-256)
+function createPromptHash(str: string): string {
+  return crypto.createHash('sha256').update(str).digest('hex').substring(0, 16);
 }
+
+// Initialize logger on module load
+initGateLogger();

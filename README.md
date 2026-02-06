@@ -45,17 +45,26 @@ A local sidecar that observes OpenClaw agent behavior through logs or piped even
 
 ### Quick Start
 
-<<<<<<< HEAD
 ```bash
+# Clone & install
 git clone https://github.com/thelight1122/aegis-core-shield.git
 cd aegis-core-shield
 npm install
-npm run dev                # GUI mode
-# or
-npm run dev -- --cli       # headless / terminal mode
-=======
-\v0.1 Scope Anchor
+
+# Run gate test via CLI
+npm run gate "Your test prompt here"
+
+# Or run development mode
+npm run dev
+
+# Run tests
+npm test
+```
+
+### v0.1 Scope Anchor
+
 This repo implements exactly four layers for OpenClaw agents:
+
 1. Interceptor
 2. Reflective Mirror
 3. Arbiter
@@ -67,21 +76,3 @@ Value delivered through three pillars:
 • Add non-force governance
 
 Anything outside this box is explicitly v0.2+.
-
-
-### Quick start
-```bash
-
-# Clone & install
-git clone https://github.com/thelight1122az/aegis-core-shield.git
-cd aegis-core-shield
-npm install
-
-# Run GUI
-npm run dev
-
-# Or headless CLI mode
-npm run dev -- --cli
-
-
->>>>>>> 1576e23fd1b723e0bb6bc5ad609130643f90122e

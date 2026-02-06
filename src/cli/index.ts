@@ -1,10 +1,11 @@
 // src/cli/index.ts
-// Purpose: Minimal CLI entry point for testing Discernment Gate
+// Purpose: Minimal CLI entry point for testing Discernment Gate + IDS pipeline
 // Usage: npx ts-node src/cli/index.ts "your test prompt here"
 //        or npm run gate "prompt text"
-// Validates gate behavior without GUI or IDS downstream
+// Validates complete gate→IDS flow per AEGIS calling pattern
 
-import { discernmentGate } from '../main/discernment-gate';
+import { discernmentGate } from '../shared/main/discernment-gate';
+import { runIDS } from '../shared/main/ids-processor';
 
 function main() {
   const args = process.argv.slice(2);
@@ -24,10 +25,23 @@ function main() {
 
   if (result.admitted) {
     console.log('[Gate Result] Admitted – prompt passes integrity check');
-    console.log('Proceeding to IDS would occur here in full app');
+    console.log('[IDS Processing] Running Identify→Define→Suggest pipeline...');
+    console.log('---');
+
+    const idsResult = runIDS(result.payload as string);
+
+    console.log(`[IDS Phase] ${idsResult.phase}`);
+    console.log('[IDS Observations]');
+    idsResult.observations.forEach(obs => console.log(`  - ${obs}`));
+    console.log('---');
+    console.log('[Complete] Gate admitted, IDS processed. Output:');
+    console.log(idsResult.output);
   } else {
     console.log('[Gate Result] Returned – resonance not fully achieved');
+    console.log('[Return Packet]');
     console.log(JSON.stringify(result.payload, null, 2));
+    console.log('---');
+    console.log('Note: Prompt may be revised and resubmitted. User agency preserved.');
   }
 
   console.log('---');
