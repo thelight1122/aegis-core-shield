@@ -1,78 +1,120 @@
 # AEGIS Core Shield
 
-Non-force governance layer for OpenClaw agents.
+Non-force governance layer implementing seven-virtue integrity system for agent prompts.
 
-### What this is (v0.1 – foundational)
+## What This Is (v0.1 – Foundational)
 
-A local sidecar that observes OpenClaw agent behavior through logs or piped events and applies four core layers:
+A **Discernment Gate** that evaluates prompts through seven virtues of integrity before processing:
 
-1. Interceptor  
-   Evaluates incoming tool calls and events against simple coherence rules.  
-   Default: allow. Only spirals when clear incoherence patterns are matched.
+1. **Honesty** – Transparency without deception  
+2. **Respect** – Boundary integrity and agency preservation  
+3. **Attention** – Focused presence without distraction  
+4. **Affection** – Warmth and care in communication  
+5. **Loyalty** – Commitment to truth and consistency  
+6. **Trust** – Reliability and safety in interaction  
+7. **Communication** – Clarity and completeness in expression  
 
-2. Reflective Mirror  
-   Produces neutral, non-judgmental summaries of observed patterns after significant events or pauses.
+**Binary Integrity Formula**: `Integrity = (H AND R AND A AND A AND L AND T AND C)`  
+All seven virtues must achieve minimum threshold for prompt admission.
 
-3. Arbiter  
-   Weighs decisions when multiple signals are present — seeks alignment, not majority or override.
+## Architecture
 
-4. DataQuad + SSSP  
-   Appends compact, high-coherence state snapshots before pauses.  
-   Offers to resume from the last aligned snapshot (user decides).
+```
+Raw Prompt → Discernment Gate → [Admitted] → IDS Pipeline → Output
+                              ↘ [Returned] → Return Packet (realignment observations)
+```
 
-### What it currently can do
+### Core Components
 
-- Detect certain repetitive or potentially wasteful patterns (e.g., frequent idle heartbeats)  
-- Flag unverified tool calls (if verification data is provided)  
-- Save per-agent state summaries locally  
-- Show basic reflections in GUI or CLI  
-- Pause for user review on matched conditions (no automatic blocking)
+1. **Tokenization** (`src/shared/main/tokenization.ts`)  
+   Breaks prompts into units with compound phrase detection
 
-### What it does not yet do
+2. **Seven Virtue Scorers** (`src/shared/main/virtue-scoring-*.ts`)  
+   Deterministic, rule-based scoring (0.0 - 1.0) per virtue
 
-- Automatically optimize token usage  
-- Proactively route to cheaper models  
-- Handle multiple OpenClaw instances simultaneously  
-- Provide swarm coordination  
-- Offer visual nebula or advanced dashboards (planned post-v0.1)
+3. **Discernment Gate** (`src/shared/main/discernment-gate.ts`)  
+   Binary integrity decision with tolerance band
 
-### Principles (locked)
+4. **IDS Pipeline** (`src/shared/main/ids-processor.ts`)  
+   Three-phase processing: Identify → Define → Suggest
 
-- Unlimited agents — no artificial caps  
-- Local-first — zero cloud dependency, zero telemetry  
-- Non-force posture — default allow, gentle spiral on mismatch, pause always valid  
-- Append-only core logic — rules added, never replaced or erased
+5. **Append-Only Logger** (`src/shared/main/gate-logger.ts`)  
+   JSONL format with SHA-256 prompt hashing
 
-### Quick Start
+## Quick Start
+
+### Installation
 
 ```bash
-# Clone & install
-git clone https://github.com/thelight1122/aegis-core-shield.git
-cd aegis-core-shield
 npm install
+```
 
-# Run gate test via CLI
-npm run gate "Your test prompt here"
+### CLI Usage
 
-# Or run development mode
-npm run dev
+```bash
+# Test a prompt through the gate
+npm run gate "Your prompt here"
 
-# Run tests
+# Example: Clean prompt (admitted)
+npm run gate "The weather is nice today"
+
+# Example: Coercive prompt (returned)
+npm run gate "You must do this now"
+```
+
+### Programmatic Usage
+
+```typescript
+import { discernmentGate, runIDS } from 'aegis-core-shield';
+
+const result = discernmentGate('Your prompt here');
+
+if (result.admitted) {
+  // Prompt passed integrity check
+  const idsResult = runIDS(result.payload as string);
+  console.log('IDS Output:', idsResult);
+} else {
+  // Prompt returned with observations
+  console.log('Return Packet:', result.payload);
+}
+```
+
+### Run Tests
+
+```bash
 npm test
 ```
 
-### v0.1 Scope Anchor
+## AEGIS Axioms
 
-This repo implements exactly four layers for OpenClaw agents:
+1. **Append-Only Reality** – Logs never deleted, only appended  
+2. **Default Allow** – Gate admits silently when Integrity = 1  
+3. **Observation-Only** – No judgment language, only observations  
+4. **Binary Integrity** – All-or-nothing (no partial integrity)  
+5. **Weakest Link** – Per-virtue minimum across all units  
+6. **Non-Force Posture** – Suggestions, not directives  
+7. **Seven Virtues** – Complete evaluation across all dimensions  
 
-1. Interceptor
-2. Reflective Mirror
-3. Arbiter
-4. DataQuad + SSSP
+See `docs/axioms-technical.md` for detailed implementation specifications.
 
-Value delivered through three pillars:
-• Illuminate cost leaks
-• Create temporal memory
-• Add non-force governance
+## Current Capabilities
 
-Anything outside this box is explicitly v0.2+.
+- ✅ Seven-virtue scoring (Honesty, Respect, Attention, Affection, Loyalty, Trust, Communication)  
+- ✅ Binary integrity gate with tolerance band  
+- ✅ Detailed return packets with realignment observations  
+- ✅ Compound phrase detection in tokenization  
+- ✅ IDS three-phase pipeline (Identify → Define → Suggest)  
+- ✅ Append-only file logging (JSONL format)  
+- ✅ CLI interface for testing  
+- ✅ Full test suite coverage  
+
+## Deferred to v0.2+
+
+- GUI interface  
+- API server endpoint  
+- Extended virtue pattern libraries  
+- Multi-language support  
+
+## License
+
+MIT
