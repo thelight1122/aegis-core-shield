@@ -1,4 +1,8 @@
 // src/main/discernment-gate.ts
+// Purpose: Core Discernment Gate – complete v0.1 implementation
+// Assembles: tokenization → Honesty scoring → tolerance → binary Integrity → branch → return packet
+// Locked invariants: observation-only, agency preserved, all-or-nothing Integrity, append-only logging
+// Run: import and call discernmentGate(prompt) from CLI/GUI/API
 
 import { Unit, tokenizeAndChunk } from './tokenization';
 import { scoreHonesty } from './virtue-scoring-honesty';
@@ -29,22 +33,23 @@ export interface ReturnPacket {
   action_taken: 'none – prompt not processed further';
 }
 
-// Configurable constants (append-only)
+// Config (append-only – add new constants below if needed)
 const TOLERANCE_BAND = 0.10;  // 10% tolerance for non-force context
 
 /**
- * Main Discernment Gate – measures prompt resonance against the seven virtues
+ * Discernment Gate – measures prompt resonance against the seven virtues
+ * v0.1: Honesty scored fully; other virtues mocked at 1.0 for structural completeness
  */
 export function discernmentGate(prompt: string): GateResult {
-  // 1. Fast pre-filter
+  // 1. Fast pre-filter for trivial cases
   if (!prompt || prompt.trim() === '') {
-    return { admitted: true, payload: prompt }; // trivial, admit
+    return { admitted: true, payload: prompt };
   }
 
   // 2. Tokenize & unitize
   const units: Unit[] = tokenizeAndChunk(prompt);
 
-  // 3. Score virtues (Honesty real; others mocked at 1.0 for v0.1)
+  // 3. Score virtues (only Honesty real; others mocked)
   const rawScores: VirtueScores = {
     Honesty: Math.min(...units.map(u => scoreHonesty(u))),
     Respect: 1.0,
@@ -55,53 +60,75 @@ export function discernmentGate(prompt: string): GateResult {
     Communication: 1.0,
   };
 
-  // 4. Apply tolerance band – treat as 1.0 if within tolerance
+  // 4. Apply tolerance band (treat near-1.0 as 1.0)
   const adjustedScores: VirtueScores = {} as VirtueScores;
   for (const [virtue, score] of Object.entries(rawScores)) {
     adjustedScores[virtue as keyof VirtueScores] = score >= 1 - TOLERANCE_BAND ? 1.0 : score;
   }
 
-  // 5. Binary Integrity gate (all-or-nothing)
+  // 5. Binary Integrity gate – all-or-nothing
   const integrity = Object.values(adjustedScores).every(s => s === 1.0) ? 1 : 0;
 
   if (integrity === 1) {
-    // Silent admit
+    // Silent admit – no logging unless verbose mode later
     return { admitted: true, payload: prompt };
   }
 
-  // 6. Generate return packet (observation only)
+  // 6. Generate return packet (observation-only)
   const fractureVirtues = Object.entries(adjustedScores)
     .filter(([_, score]) => score < 1.0)
-    .map(([virtue, score]) => ({
-      virtue,
-      score,
-      minUnit: units.reduce((minU, u) => {
+    .map(([virtue, score]) => {
+      let minUnit = '(not located)';
+      let minScore = 1.0;
+      units.forEach(u => {
         const uScore = virtue === 'Honesty' ? scoreHonesty(u) : 1.0;
-        return uScore < (minU?.score ?? 1.1) ? { unit: u.text, score: uScore } : minU;
-      }, null as { unit: string; score: number } | null)?.unit,
-    }));
+        if (uScore < minScore) {
+          minScore = uScore;
+          minUnit = u.text;
+        }
+      });
+      return { virtue, score, minUnit };
+    });
 
   const returnPacket: ReturnPacket = {
     status: 'discernment_gate_return',
     integrity: 0,
     message: 'Resonance not fully achieved. Prompt returned for optional realignment.',
     observed_alignment: Object.fromEntries(
-      Object.entries(adjustedScores).map(([v, s]) => [v, { score: s, passed_tolerance: s >= 1 - TOLERANCE_BAND }])
+      Object.entries(adjustedScores).map(([v, s]) => [
+        v,
+        { score: s, passed_tolerance: s >= 1 - TOLERANCE_BAND, min_unit: s < 1 ? fractureVirtues.find(f => f.virtue === v)?.minUnit : undefined }
+      ])
     ),
     fracture_locations: fractureVirtues.map(f => ({
-      unit: f.minUnit || '(not located)',
+      unit: f.minUnit,
       virtues_affected: [f.virtue],
-      observation: 'score below threshold after tolerance',
+      observation: `score below threshold after tolerance (${f.score.toFixed(2)})`,
     })),
     realignment_observations: fractureVirtues.map(f => 
-      `For ${f.virtue}: consider adjusting phrasing where score dropped`
+      `For ${f.virtue}: consider reviewing phrasing where minimum score occurred`
     ),
     original_prompt: prompt,
     action_taken: 'none – prompt not processed further',
   };
 
-  // 7. Append-only log (stub – implement real logger later)
-  console.log('[Gate Log]', { timestamp: new Date().toISOString(), returnPacket });
+  // 7. Append-only log (console for now – replace with file logger later)
+  console.log('[Gate Decision]', {
+    timestamp: new Date().toISOString(),
+    promptHash: simpleHash(prompt), // stub – implement real hash if needed
+    integrity,
+    returnPacket: integrity === 0 ? returnPacket : undefined,
+  });
 
   return { admitted: false, payload: returnPacket };
+}
+
+// Simple hash stub for logging (replace with crypto later)
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString(16);
 }
