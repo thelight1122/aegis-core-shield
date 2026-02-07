@@ -1,63 +1,70 @@
 // src/shared/main/virtue-scoring-loyalty.ts
-// Purpose: Loyalty virtue scorer – Preserving commitment and consistency integrity
-// Rule-based, deterministic, observation-only. No judgment language.
-// Appended rules only – never replace or remove.
+// Purpose: Loyalty virtue scorer – Commitment to truth
+// Observation-only, rule-based. No judgment.
+// Appended rules only.
 
 import { Unit } from './tokenization';
 
-// Loyalty fractures when language indicates betrayal, abandonment, or fickleness
+const CONDITIONAL_INDICATORS = new Set([
+    'if', 'unless', 'depending on', 'maybe', 'perhaps', 'possibly'
+]);
+
+const WAVER_TERMS = new Set([
+    'not sure', 'I guess', 'could be', 'might be', 'who knows',
+    'fickle', 'unsteady', 'wavering'
+]);
+
+const ABANDONMENT_PATTERNS = [
+    'give up', 'forget it', 'not worth it', "let's drop it",
+    'abandon', 'leave behind', 'quit'
+];
+
 const BETRAYAL_WORDS = new Set([
-    'betray', 'backstab', 'sell out', 'turn against',
-    'double-cross', 'deceive', 'two-faced', 'disloyal'
-]);
-
-const ABANDONMENT_WORDS = new Set([
-    'abandon', 'leave behind', 'give up on', 'walk away',
-    'quit on', 'desert', 'forsake', 'bail on'
-]);
-
-const FICKLENESS_INDICATORS = new Set([
-    'change my mind', 'on second thought', 'never mind',
-    'whatever works', 'doesn\'t matter anymore', 'switching sides'
+    'betray', 'treason', 'backstab', 'double cross', 'sell out'
 ]);
 
 export function scoreLoyalty(unit: Unit): number {
     const textLower = unit.text.toLowerCase();
+    let penalty = 0;
 
-    // 1. Betrayal density
-    let disloyaltyCount = 0;
-    for (const word of BETRAYAL_WORDS) {
+    // 1. Conditional density
+    for (const word of CONDITIONAL_INDICATORS) {
         const regex = new RegExp(`\\b${word}\\b`, 'i');
-        if (regex.test(textLower)) disloyaltyCount++;
+        if (regex.test(textLower)) penalty += 0.3;
     }
 
-    // 2. Abandonment density
-    for (const word of ABANDONMENT_WORDS) {
+    // 2. Waver / uncertainty density
+    for (const word of WAVER_TERMS) {
         const regex = new RegExp(`\\b${word}\\b`, 'i');
-        if (regex.test(textLower)) disloyaltyCount++;
+        if (regex.test(textLower)) penalty += 0.4;
     }
 
-    // 3. Fickleness density
-    for (const indicator of FICKLENESS_INDICATORS) {
-        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
-        if (regex.test(textLower)) disloyaltyCount++;
+    // 3. Abandonment patterns
+    for (const pattern of ABANDONMENT_PATTERNS) {
+        const regex = new RegExp(`\\b${pattern}\\b`, 'i');
+        if (regex.test(textLower)) penalty += 0.5;
     }
 
-    const tokenCount = unit.text.split(/\s+/).length;
-    const density = tokenCount > 0 ? disloyaltyCount / tokenCount : 0;
+    const tokenCount = unit.text.split(/\s+/).length || 1;
+    const density = penalty / tokenCount;
 
-    // Penalty: 28% deduction per 10% density (k=2.8, high - loyalty is binary)
-    let rawScore = 1 - 2.8 * density;
+    let rawScore = 1 - 2.0 * density; // k=2.0 for commitment deduction
 
-    // Clamp to [0,1]
     rawScore = Math.max(0, Math.min(1, rawScore));
 
-    // If explicit betrayal → immediate 0
-    for (const word of BETRAYAL_WORDS) {
-        const regex = new RegExp(`\\b${word}\\b`, 'i');
-        if (regex.test(textLower)) {
-            return 0;
-        }
+    // Immediate zero for direct abandonment, betrayal, or high waver
+    const hasAbandonment = ABANDONMENT_PATTERNS.some(p => {
+        const regex = new RegExp(`\\b${p}\\b`, 'i');
+        return regex.test(textLower);
+    });
+
+    const hasBetrayal = Array.from(BETRAYAL_WORDS).some(p => {
+        const regex = new RegExp(`\\b${p}\\b`, 'i');
+        return regex.test(textLower);
+    });
+
+    if (hasAbandonment || hasBetrayal || density > 0.5) {
+        return 0;
     }
 
     return rawScore;

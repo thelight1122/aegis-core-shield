@@ -1,4 +1,4 @@
-// src/main/virtue-scoring-honesty.ts
+// src/shared/main/virtue-scoring-honesty.ts
 // Purpose: Honesty virtue scorer – Preserving the transparency of truth
 // Rule-based, deterministic, observation-only. No judgment language.
 // Appended rules only – never replace or remove.
@@ -50,7 +50,12 @@ export function scoreHonesty(unit: Unit): number {
   rawScore = Math.max(0, Math.min(1, rawScore));
 
   // If any explicit coercive phrase → immediate 0 (no tolerance for direct force)
-  if (FORCE_WORDS_IMPERATIVE.has(unit.text.toLowerCase())) {
+  const hasForce = Array.from(FORCE_WORDS_IMPERATIVE).some(p => {
+    const regex = new RegExp(`\\b${p}\\b`, 'i');
+    return regex.test(textLower);
+  });
+
+  if (hasForce) {
     return 0;
   }
 
