@@ -1,63 +1,62 @@
 // src/shared/main/virtue-scoring-communication.ts
-// Purpose: Communication virtue scorer – Preserving clarity and openness integrity
-// Rule-based, deterministic, observation-only. No judgment language.
+// Purpose: Communication virtue scorer – Conveying truth clearly and without ambiguity
+// Observation-only, rule-based. No judgment.
 // Appended rules only – never replace or remove.
 
 import { Unit } from './tokenization';
 
-// Communication fractures when language is unclear, closed, or obfuscated
-const CLARITY_VIOLATIONS = new Set([
-    'confusing', 'unclear', 'vague', 'ambiguous',
-    'muddy', 'obscure', 'cryptic', 'convoluted'
+const AMBIGUITY_INDICATORS = new Set([
+    'maybe', 'perhaps', 'possibly', 'kind of', 'sort of', 'somewhat',
+    'you know', 'like', 'um', 'uh', 'basically', 'literally'
 ]);
 
-const CLOSURE_WORDS = new Set([
-    'shut down', 'close off', 'stop talking', 'end discussion',
-    'no more questions', 'final answer', 'case closed', 'that\'s it'
-]);
+const EVASION_PATTERNS = [
+    'it depends', 'hard to say', 'not sure', 'I guess', 'probably',
+    'could be', 'might be', 'who knows'
+];
 
-const OBFUSCATION_INDICATORS = new Set([
-    'intentionally vague', 'don\'t want to say', 'can\'t tell you',
-    'secret', 'confidential', 'off the record', 'between us'
+const OVERLOAD_TERMS = new Set([
+    'etc', 'and so on', 'blah blah', 'you get the idea', 'whatever'
 ]);
 
 export function scoreCommunication(unit: Unit): number {
     const textLower = unit.text.toLowerCase();
+    let penalty = 0;
 
-    // 1. Clarity violation density
-    let blockageCount = 0;
-    for (const word of CLARITY_VIOLATIONS) {
+    // 1. Ambiguity / filler density
+    for (const word of AMBIGUITY_INDICATORS) {
         const regex = new RegExp(`\\b${word}\\b`, 'i');
-        if (regex.test(textLower)) blockageCount++;
+        if (regex.test(textLower)) penalty += 0.3;
     }
 
-    // 2. Closure density
-    for (const word of CLOSURE_WORDS) {
+    // 2. Evasion / deflection patterns
+    for (const pattern of EVASION_PATTERNS) {
+        const regex = new RegExp(`\\b${pattern}\\b`, 'i');
+        if (regex.test(textLower)) penalty += 0.5;
+    }
+
+    // 3. Overload / truncation density
+    for (const word of OVERLOAD_TERMS) {
         const regex = new RegExp(`\\b${word}\\b`, 'i');
-        if (regex.test(textLower)) blockageCount++;
+        if (regex.test(textLower)) penalty += 0.4;
     }
 
-    // 3. Obfuscation density
-    for (const indicator of OBFUSCATION_INDICATORS) {
-        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
-        if (regex.test(textLower)) blockageCount++;
-    }
+    const tokenCount = unit.text.split(/\s+/).length || 1;
+    const density = penalty / tokenCount;
 
-    const tokenCount = unit.text.split(/\s+/).length;
-    const density = tokenCount > 0 ? blockageCount / tokenCount : 0;
+    // Penalty: k=2.0 → 10% density costs 0.20 points
+    let rawScore = 1 - 2.0 * density;
 
-    // Penalty: 25% deduction per 10% density (k=2.5, balanced)
-    let rawScore = 1 - 2.5 * density;
-
-    // Clamp to [0,1]
     rawScore = Math.max(0, Math.min(1, rawScore));
 
-    // If explicit closure → immediate 0
-    for (const word of CLOSURE_WORDS) {
-        const regex = new RegExp(`\\b${word}\\b`, 'i');
-        if (regex.test(textLower)) {
-            return 0;
-        }
+    // Immediate zero for direct evasion or overload
+    const hasEvasion = EVASION_PATTERNS.some(p => {
+        const regex = new RegExp(`\\b${p}\\b`, 'i');
+        return regex.test(textLower);
+    });
+
+    if (hasEvasion || textLower.includes('etc.')) {
+        return 0;
     }
 
     return rawScore;

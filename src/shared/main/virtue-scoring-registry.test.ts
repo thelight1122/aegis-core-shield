@@ -52,8 +52,20 @@ describe('Virtue Scoring Registry – Unit Tests', () => {
         expect(result).toBe(0); // explicit deception → immediate zero
     });
 
-    test('Communication: detects closure and obfuscation', () => {
-        const result = scoreCommunication(makeUnit('Stop talking case closed'));
-        expect(result).toBe(0); // explicit closure → immediate zero
+    test('Communication: detects ambiguity, evasion, and overload', () => {
+        // Test ambiguity
+        const resultAmbiguous = scoreCommunication(makeUnit('Maybe we could possibly do that'));
+        expect(resultAmbiguous).toBeLessThan(1.0);
+
+        // Test evasion (immediate zero)
+        const resultEvasion = scoreCommunication(makeUnit('It depends on who knows'));
+        expect(resultEvasion).toBe(0);
+
+        // Test overload (immediate zero via etc.)
+        const resultOverload = scoreCommunication(makeUnit('Standard process etc.'));
+        expect(resultOverload).toBe(0);
+
+        // Test clean communication
+        expect(scoreCommunication(makeUnit('This is a clear statement'))).toBe(1.0);
     });
 });

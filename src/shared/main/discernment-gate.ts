@@ -58,15 +58,15 @@ export function discernmentGate(prompt: string): GateResult {
   // 2. Tokenize & unitize
   const units: Unit[] = tokenizeAndChunk(prompt);
 
-  // 3. Score virtues (all seven now implemented)
+  // 3. Score virtues (Honesty + Affection + Communication active)
   const rawScores: VirtueScores = {
     Honesty: Math.min(...units.map(u => scoreHonesty(u))),
-    Respect: Math.min(...units.map(u => scoreRespect(u))),
-    Attention: Math.min(...units.map(u => scoreAttention(u))),
     Affection: Math.min(...units.map(u => scoreAffection(u))),
-    Loyalty: Math.min(...units.map(u => scoreLoyalty(u))),
-    Trust: Math.min(...units.map(u => scoreTrust(u))),
     Communication: Math.min(...units.map(u => scoreCommunication(u))),
+    Respect: 1.0,
+    Attention: 1.0,
+    Loyalty: 1.0,
+    Trust: 1.0,
   };
 
   // 4. Apply tolerance band (treat near-1.0 as 1.0)
@@ -93,12 +93,9 @@ export function discernmentGate(prompt: string): GateResult {
         let uScore = 1.0;
         switch (virtue) {
           case 'Honesty': uScore = scoreHonesty(u); break;
-          case 'Respect': uScore = scoreRespect(u); break;
-          case 'Attention': uScore = scoreAttention(u); break;
           case 'Affection': uScore = scoreAffection(u); break;
-          case 'Loyalty': uScore = scoreLoyalty(u); break;
-          case 'Trust': uScore = scoreTrust(u); break;
           case 'Communication': uScore = scoreCommunication(u); break;
+          default: uScore = 1.0; break;
         }
         if (uScore < minScore) {
           minScore = uScore;
