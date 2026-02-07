@@ -1,10 +1,10 @@
 // src/shared/types.ts (core contract – locked for v0.1)
 
-type AgentEvent = 
+type AgentEvent =
   | ToolCallEvent
   | ModelResponseEvent
   | HeartbeatEvent
-  | ErrorEvent
+  | AegisErrorEvent
   | CostRelevantEvent
   | PauseTriggerEvent;
 
@@ -41,7 +41,7 @@ interface HeartbeatEvent extends BaseEvent {
   contextSize?: number;           // current context tokens (leak indicator)
 }
 
-interface ErrorEvent extends BaseEvent {
+interface AegisErrorEvent extends BaseEvent {
   eventType: "error";
   message: string;
   stack?: string;
