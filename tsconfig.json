@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
-        "jsx": "react",
+        "jsx": "react-jsx",
         "target": "ES2020",
         "module": "commonjs",
         "lib": [
-            "ES2020"
+            "ES2020",
+            "DOM"
         ],
         "outDir": "./dist",
         "rootDir": "./src",
@@ -19,7 +20,8 @@
         "resolveJsonModule": true,
         "types": [
             "node",
-            "jest"
+            "jest",
+            "electron"
         ]
     },
     "include": [
@@ -28,7 +30,6 @@
     "exclude": [
         "node_modules",
         "dist",
-        "**/*.test.ts",
-        "src/renderer"
+        "**/*.test.ts"
     ]
 }
