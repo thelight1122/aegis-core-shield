@@ -27,17 +27,20 @@ export function scoreAttention(unit: Unit): number {
     // 1. Distraction density
     let inattentionCount = 0;
     for (const word of DISTRACTION_WORDS) {
-        if (textLower.includes(word)) inattentionCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) inattentionCount++;
     }
 
     // 2. Rushing/pressure density
     for (const word of RUSHING_WORDS) {
-        if (textLower.includes(word)) inattentionCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) inattentionCount++;
     }
 
     // 3. Explicit absence indicators
     for (const indicator of ABSENCE_INDICATORS) {
-        if (textLower.includes(indicator)) inattentionCount++;
+        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
+        if (regex.test(textLower)) inattentionCount++;
     }
 
     const tokenCount = unit.text.split(/\s+/).length;
@@ -51,7 +54,8 @@ export function scoreAttention(unit: Unit): number {
 
     // If explicit absence statement → immediate 0
     for (const indicator of ABSENCE_INDICATORS) {
-        if (textLower.includes(indicator)) {
+        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
+        if (regex.test(textLower)) {
             return 0;
         }
     }

@@ -27,17 +27,20 @@ export function scoreLoyalty(unit: Unit): number {
     // 1. Betrayal density
     let disloyaltyCount = 0;
     for (const word of BETRAYAL_WORDS) {
-        if (textLower.includes(word)) disloyaltyCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) disloyaltyCount++;
     }
 
     // 2. Abandonment density
     for (const word of ABANDONMENT_WORDS) {
-        if (textLower.includes(word)) disloyaltyCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) disloyaltyCount++;
     }
 
     // 3. Fickleness density
     for (const indicator of FICKLENESS_INDICATORS) {
-        if (textLower.includes(indicator)) disloyaltyCount++;
+        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
+        if (regex.test(textLower)) disloyaltyCount++;
     }
 
     const tokenCount = unit.text.split(/\s+/).length;
@@ -51,7 +54,8 @@ export function scoreLoyalty(unit: Unit): number {
 
     // If explicit betrayal → immediate 0
     for (const word of BETRAYAL_WORDS) {
-        if (textLower.includes(word)) {
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) {
             return 0;
         }
     }

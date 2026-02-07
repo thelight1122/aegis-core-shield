@@ -27,17 +27,20 @@ export function scoreRespect(unit: Unit): number {
     // 1. Boundary violation density
     let violationCount = 0;
     for (const word of BOUNDARY_VIOLATION_WORDS) {
-        if (textLower.includes(word)) violationCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) violationCount++;
     }
 
     // 2. Dismissal density
     for (const word of DISMISSAL_WORDS) {
-        if (textLower.includes(word)) violationCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) violationCount++;
     }
 
     // 3. Override/superiority density
     for (const phrase of OVERRIDE_PHRASES) {
-        if (textLower.includes(phrase)) violationCount++;
+        const regex = new RegExp(`\\b${phrase}\\b`, 'i');
+        if (regex.test(textLower)) violationCount++;
     }
 
     const tokenCount = unit.text.split(/\s+/).length;
@@ -51,7 +54,8 @@ export function scoreRespect(unit: Unit): number {
 
     // If any explicit boundary violation → immediate 0
     for (const word of BOUNDARY_VIOLATION_WORDS) {
-        if (textLower === word || textLower.includes(' ' + word + ' ')) {
+        const regex = new RegExp(`^${word}$|^${word}\\W|\\W${word}$|\\W${word}\\W`, 'i');
+        if (regex.test(textLower)) {
             return 0;
         }
     }

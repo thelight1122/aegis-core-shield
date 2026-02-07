@@ -9,17 +9,19 @@ A **Discernment Gate** that evaluates prompts through seven virtues of integrity
 1. **Honesty** – Transparency without deception  
 2. **Respect** – Boundary integrity and agency preservation  
 3. **Attention** – Focused presence without distraction  
-4. **Affection** – Warmth and care in communication  
+4. **Affection** – Warmth and care in communication (Harmonic Resonance)
 5. **Loyalty** – Commitment to truth and consistency  
 6. **Trust** – Reliability and safety in interaction  
 7. **Communication** – Clarity and completeness in expression  
 
 **Binary Integrity Formula**: `Integrity = (H AND R AND A AND A AND L AND T AND C)`  
-All seven virtues must achieve minimum threshold for prompt admission.
+All seven virtues must achieve 1.0 (post-tolerance) for prompt admission.
+
+**IDS Pipeline**: Admitted prompts flow into the Identify → Define → Suggest engine for non-force observation and pathing.
 
 ## Architecture
 
-```
+```text
 Raw Prompt → Discernment Gate → [Admitted] → IDS Pipeline → Output
                               ↘ [Returned] → Return Packet (realignment observations)
 ```

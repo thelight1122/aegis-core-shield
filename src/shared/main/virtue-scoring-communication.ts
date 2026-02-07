@@ -27,17 +27,20 @@ export function scoreCommunication(unit: Unit): number {
     // 1. Clarity violation density
     let blockageCount = 0;
     for (const word of CLARITY_VIOLATIONS) {
-        if (textLower.includes(word)) blockageCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) blockageCount++;
     }
 
     // 2. Closure density
     for (const word of CLOSURE_WORDS) {
-        if (textLower.includes(word)) blockageCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) blockageCount++;
     }
 
     // 3. Obfuscation density
     for (const indicator of OBFUSCATION_INDICATORS) {
-        if (textLower.includes(indicator)) blockageCount++;
+        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
+        if (regex.test(textLower)) blockageCount++;
     }
 
     const tokenCount = unit.text.split(/\s+/).length;
@@ -51,7 +54,8 @@ export function scoreCommunication(unit: Unit): number {
 
     // If explicit closure → immediate 0
     for (const word of CLOSURE_WORDS) {
-        if (textLower.includes(word)) {
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) {
             return 0;
         }
     }

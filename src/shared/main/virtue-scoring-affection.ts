@@ -27,17 +27,20 @@ export function scoreAffection(unit: Unit): number {
     // 1. Coldness density
     let coldnessCount = 0;
     for (const word of COLDNESS_WORDS) {
-        if (textLower.includes(word)) coldnessCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) coldnessCount++;
     }
 
     // 2. Hostility density
     for (const word of HOSTILITY_WORDS) {
-        if (textLower.includes(word)) coldnessCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) coldnessCount++;
     }
 
     // 3. Warmth negation density
     for (const phrase of WARMTH_NEGATION) {
-        if (textLower.includes(phrase)) coldnessCount++;
+        const regex = new RegExp(`\\b${phrase}\\b`, 'i');
+        if (regex.test(textLower)) coldnessCount++;
     }
 
     const tokenCount = unit.text.split(/\s+/).length;
@@ -51,7 +54,8 @@ export function scoreAffection(unit: Unit): number {
 
     // If explicit hostility → immediate 0
     for (const word of HOSTILITY_WORDS) {
-        if (textLower === word || textLower.includes(' ' + word + ' ')) {
+        const regex = new RegExp(`^${word}$|^${word}\\W|\\W${word}$|\\W${word}\\W`, 'i');
+        if (regex.test(textLower)) {
             return 0;
         }
     }

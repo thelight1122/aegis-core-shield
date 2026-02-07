@@ -27,17 +27,20 @@ export function scoreTrust(unit: Unit): number {
     // 1. Deception density
     let untrustCount = 0;
     for (const word of DECEPTION_WORDS) {
-        if (textLower.includes(word)) untrustCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) untrustCount++;
     }
 
     // 2. Unreliability density
     for (const word of UNRELIABILITY_WORDS) {
-        if (textLower.includes(word)) untrustCount++;
+        const regex = new RegExp(`\\b${word}\\b`, 'i');
+        if (regex.test(textLower)) untrustCount++;
     }
 
     // 3. Danger indicators
     for (const indicator of DANGER_INDICATORS) {
-        if (textLower.includes(indicator)) untrustCount++;
+        const regex = new RegExp(`\\b${indicator}\\b`, 'i');
+        if (regex.test(textLower)) untrustCount++;
     }
 
     const tokenCount = unit.text.split(/\s+/).length;
@@ -51,7 +54,8 @@ export function scoreTrust(unit: Unit): number {
 
     // If explicit deception → immediate 0
     for (const word of DECEPTION_WORDS) {
-        if (textLower === word || textLower.includes(' ' + word + ' ')) {
+        const regex = new RegExp(`^${word}$|^${word}\\W|\\W${word}$|\\W${word}\\W`, 'i');
+        if (regex.test(textLower)) {
             return 0;
         }
     }

@@ -24,17 +24,20 @@ export function scoreHonesty(unit: Unit): number {
   // 1. Imperative / coercive density
   let forceCount = 0;
   for (const word of FORCE_WORDS_IMPERATIVE) {
-    if (textLower.includes(word)) forceCount++;
+    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    if (regex.test(textLower)) forceCount++;
   }
 
   // 2. Compression / assumption density
   for (const word of FORCE_WORDS_COMPRESSION) {
-    if (textLower.includes(word)) forceCount++;
+    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    if (regex.test(textLower)) forceCount++;
   }
 
   // 3. Omission / bypass density
   for (const word of FORCE_WORDS_OMISSION) {
-    if (textLower.includes(word)) forceCount++;
+    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    if (regex.test(textLower)) forceCount++;
   }
 
   const tokenCount = unit.text.split(/\s+/).length;

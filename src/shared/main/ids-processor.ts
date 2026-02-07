@@ -10,6 +10,20 @@ export interface IDSResult {
     input: string;
     output: string;
     observations: string[];
+    analysis?: {
+        entities: string[];
+        intent: {
+            imperative: boolean;
+            question: boolean;
+            negation: boolean;
+            forceWord: boolean;
+            descriptive: boolean;
+        };
+        virtueTieBack: {
+            Honesty: string;
+            Affection: string;
+        };
+    };
     timestamp: string;
 }
 
@@ -19,6 +33,8 @@ export interface IDSResult {
  */
 export function identify(prompt: string): IDSResult {
     const observations: string[] = [];
+    const lower = prompt.toLowerCase();
+    const words = lower.split(/\s+/).filter(w => w.length > 2);
 
     // Detect question vs. statement
     if (prompt.includes('?')) {
@@ -27,24 +43,56 @@ export function identify(prompt: string): IDSResult {
         observations.push('Prompt contains declarative structure');
     }
 
-    // Detect temporal markers
-    const temporalMarkers = ['now', 'today', 'tomorrow', 'yesterday', 'soon', 'later'];
-    const foundMarkers = temporalMarkers.filter(marker =>
-        prompt.toLowerCase().includes(marker)
-    );
-    if (foundMarkers.length > 0) {
-        observations.push(`Temporal markers present: ${foundMarkers.join(', ')}`);
+    // Intent signals (Cycle 3 logic)
+    const hasImperative = words.some(w => ['must', 'should', 'need', 'have to', 'do it'].includes(w));
+    const hasQuestion = lower.includes('?');
+    const hasNegation = lower.includes('not') || lower.includes('no');
+    const hasForceWord = words.some(w => ['must', 'should', 'need', 'have to'].includes(w));
+
+    observations.push(`Intent: ${hasImperative ? 'imperative' : 'descriptive'}`);
+    if (hasNegation) observations.push('Intent Signal: negation detected');
+
+    // Entity extraction (Cycle 3 logic + heuristic)
+    const exclusions = ['the', 'and', 'for', 'with', 'you', 'this', 'that', 'is', 'are'];
+    const rawEntities = prompt.split(/\s+/).filter((word, index) =>
+        index > 0 && /^[A-Z][a-z]+/.test(word.replace(/[^a-zA-Z]/g, ''))
+    ).map(e => e.replace(/[^a-zA-Z]/g, ''));
+
+    const potentialEntities = Array.from(new Set(rawEntities)).filter(e => !exclusions.includes(e.toLowerCase()));
+
+    if (potentialEntities.length > 0) {
+        observations.push(`Potential entities observed: ${potentialEntities.join(', ')}`);
     }
 
+    // Virtue Tie-Back (Cycle 3 logic)
+    const honestyTie = hasForceWord ? 'potential transparency fracture' : 'aligned';
+    const affectionTie = lower.includes('just') || lower.includes('whatever') ? 'potential tone fracture' : 'aligned';
+
+    observations.push(`Virtue Tie-Back: Honesty is ${honestyTie}`);
+    observations.push(`Virtue Tie-Back: Affection is ${affectionTie}`);
+
     // Word count observation
-    const wordCount = prompt.split(/\s+/).length;
-    observations.push(`Prompt length: ${wordCount} words`);
+    observations.push(`Prompt length: ${words.length} words (filtered)`);
 
     return {
         phase: 'identify',
         input: prompt,
-        output: prompt, // Pass through unchanged
+        output: prompt,
         observations,
+        analysis: {
+            entities: potentialEntities,
+            intent: {
+                imperative: hasImperative,
+                question: hasQuestion,
+                negation: hasNegation,
+                forceWord: hasForceWord,
+                descriptive: !hasImperative && !hasQuestion && !hasNegation
+            },
+            virtueTieBack: {
+                Honesty: honestyTie,
+                Affection: affectionTie
+            }
+        },
         timestamp: new Date().toISOString(),
     };
 }
@@ -69,11 +117,26 @@ export function define(identifyResult: IDSResult): IDSResult {
         observations.push(`Action indicators: ${foundActions.join(', ')}`);
     }
 
+    // NEW: Context Mapping
+    const hasEntity = observations.some(obs => obs.includes('Potential entities observed'));
+    const isInterrogative = observations.some(obs => obs.includes('interrogative'));
+
+    if (isInterrogative && hasEntity) {
+        observations.push('Pattern: Entity-centric inquiry');
+    } else if (isInterrogative) {
+        observations.push('Pattern: General inquiry');
+    } else if (foundActions.length > 0) {
+        observations.push('Pattern: Directive/Task proposal');
+    } else {
+        observations.push('Pattern: Descriptive observation');
+    }
+
     return {
         phase: 'define',
         input: identifyResult.input,
         output: identifyResult.output,
         observations,
+        analysis: identifyResult.analysis,
         timestamp: new Date().toISOString(),
     };
 }
@@ -95,6 +158,17 @@ export function suggest(defineResult: IDSResult): IDSResult {
         suggestions.push('Observed: action verbs present - task execution pathway available');
     }
 
+    // NEW: Virtue Tie-back (Cycle 3 logic)
+    const analysis = defineResult.analysis;
+    if (analysis) {
+        if (analysis.virtueTieBack.Honesty !== 'aligned') {
+            suggestions.push(`Suggestion: Review for Honesty resonance (${analysis.virtueTieBack.Honesty})`);
+        }
+        if (analysis.virtueTieBack.Affection !== 'aligned') {
+            suggestions.push(`Suggestion: Review for Affection resonance (${analysis.virtueTieBack.Affection})`);
+        }
+    }
+
     // Default suggestion
     suggestions.push('Direct processing pathway available');
 
@@ -105,6 +179,7 @@ export function suggest(defineResult: IDSResult): IDSResult {
         input: defineResult.input,
         output: defineResult.output,
         observations,
+        analysis: defineResult.analysis,
         timestamp: new Date().toISOString(),
     };
 }
