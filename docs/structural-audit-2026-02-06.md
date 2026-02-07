@@ -1,6 +1,7 @@
 # AEGIS Structural Audit – 2026-02-06
 
 ## Observation 1: Scorer Status
+
 Contrary to legacy documentation in `src/shared/main/discernment-gate.ts`, all seven virtue scorers (Honesty, Respect, Attention, Affection, Loyalty, Trust, Communication) are fully implemented and functional as of v0.1.
 
 ## Observation 2: IDS Canonical Mapping
