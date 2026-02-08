@@ -117,6 +117,10 @@ See `docs/axioms-technical.md` for detailed implementation specifications.
 - Extended virtue pattern libraries  
 - Multi-language support  
 
+## Agentic Stewardship (Draft)
+
+AEGIS can act as a non-force stewardship layer for agentic fleets, preserving recursive learning memory via DataQuad logging while keeping integrity checks at the gate. See the draft integration notes in `docs/agentic-stewardship.md`.  
+
 ## License
 
 MIT
