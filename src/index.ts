@@ -23,3 +23,14 @@ export { scoreAffection } from './shared/main/virtue-scoring-affection';
 export { scoreLoyalty } from './shared/main/virtue-scoring-loyalty';
 export { scoreTrust } from './shared/main/virtue-scoring-trust';
 export { scoreCommunication } from './shared/main/virtue-scoring-communication';
+
+// OpenClaw adapter skeleton
+export {
+  buildDataQuadSnapshot,
+  buildOpenClawLogEntry,
+  processOpenClawEvent,
+  DataQuadSnapshot,
+  OpenClawAdapterOptions,
+  OpenClawEvent,
+  OpenClawLogEntry,
+} from './adapters/openclaw-adapter';
