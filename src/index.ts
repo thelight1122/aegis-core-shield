@@ -42,3 +42,15 @@ export {
   DataQuadSnapshot,
   ValidationResult,
 } from './adapters/dataquad-schema';
+
+
+// OpenClaw ingestion interface
+export {
+  appendOpenClawLogEntry,
+  createStewardServer,
+  getOpenClawLogFilePath,
+  ingestOpenClawEvent,
+  initOpenClawLogger,
+  startStewardServer,
+  IngestServerOptions,
+} from './adapters/openclaw-ingest';

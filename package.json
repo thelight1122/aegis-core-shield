@@ -12,7 +12,8 @@
         "test:watch": "jest --watch",
         "build": "tsc",
         "clean": "rimraf dist",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "steward": "ts-node src/cli/steward-server.ts"
     },
     "keywords": [
         "aegis",

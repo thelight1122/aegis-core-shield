@@ -97,6 +97,30 @@ Agentic IDE → AEGIS Gate → IDS Output → Agentic Fleet (tools)
 4. **Persist**: Append DataQuad snapshots + IDS output to JSONL.
 5. **Replay**: Periodically summarize or replay DataQuad history.
 
+
+### Local Steward Server (Step 3)
+
+A minimal ingestion interface is now available:
+
+- CLI entrypoint: `npm run steward`
+- Health check: `GET /health`
+- Event ingest: `POST /openclaw/event`
+- Append-only log file: `data/adapter-logs/openclaw-events.jsonl` (or `AEGIS_ADAPTER_LOG_DIR` override)
+
+Example request:
+
+```bash
+curl -X POST http://127.0.0.1:8787/openclaw/event \
+  -H 'content-type: application/json' \
+  -d '{
+    "agentId":"fleet/agent-01",
+    "sessionId":"session-001",
+    "requestId":"req-001",
+    "prompt":"The weather is nice today.",
+    "toolIntent":"repo.search"
+  }'
+```
+
 ## Fleet Stewarding Workflow (High-Level)
 
 1. **Intake**: Agent sends prompt + metadata (agent id, tool intent).
@@ -129,5 +153,5 @@ Use the adapter skeleton in `src/adapters/openclaw-adapter.ts` as a starting poi
 ## Next Steps
 
 - ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- Add a lightweight local API server (v0.2+).
+- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
 - Provide adapters for OpenClaw and other agentic frameworks.
