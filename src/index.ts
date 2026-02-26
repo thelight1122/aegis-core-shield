@@ -29,8 +29,16 @@ export {
   buildDataQuadSnapshot,
   buildOpenClawLogEntry,
   processOpenClawEvent,
-  DataQuadSnapshot,
   OpenClawAdapterOptions,
   OpenClawEvent,
   OpenClawLogEntry,
 } from './adapters/openclaw-adapter';
+
+// DataQuad schema and validation
+export {
+  DATAQUAD_JSON_SCHEMA,
+  isDataQuadSnapshot,
+  validateDataQuadSnapshot,
+  DataQuadSnapshot,
+  ValidationResult,
+} from './adapters/dataquad-schema';

@@ -128,6 +128,6 @@ Use the adapter skeleton in `src/adapters/openclaw-adapter.ts` as a starting poi
 
 ## Next Steps
 
-- Define a DataQuad schema for JSONL logging.
+- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
 - Add a lightweight local API server (v0.2+).
 - Provide adapters for OpenClaw and other agentic frameworks.

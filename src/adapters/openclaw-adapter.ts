@@ -1,14 +1,9 @@
 import { createHash } from 'crypto';
 
 import { discernmentGate, GateResult } from '../shared/main/discernment-gate';
-import { IDSResult, runIDS } from '../shared/main/ids-processor';
 
-export interface DataQuadSnapshot {
-  temporal: string[];
-  contextual: string[];
-  affective: string[];
-  reflective: string[];
-}
+import { DataQuadSnapshot } from './dataquad-schema';
+import { IDSResult, runIDS } from '../shared/main/ids-processor';
 
 export interface OpenClawEvent {
   agentId: string;
