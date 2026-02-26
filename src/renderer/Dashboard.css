@@ -16,6 +16,75 @@
     margin: 0;
 }
 
+.mode-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.mode-button {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    background: #161b22;
+    color: #c9d1d9;
+    cursor: pointer;
+}
+
+.mode-button.active {
+    border-color: #58a6ff;
+    background: #1f2a38;
+}
+
+.mode-panel {
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 14px;
+    background: #11161d;
+}
+
+.agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.agent-card {
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 10px;
+    background: #0d1117;
+}
+
+.agent-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.agent-status {
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 999px;
+}
+
+.agent-status.active {
+    background: rgba(46, 160, 67, 0.2);
+    color: #2ea043;
+}
+
+.agent-status.idle {
+    background: rgba(240, 246, 252, 0.08);
+    color: #8b949e;
+}
+
+.agent-id {
+    font-size: 12px;
+    color: #8b949e;
+    margin: 6px 0;
+}
+
 .nebula-container {
     position: relative;
     width: 300px;

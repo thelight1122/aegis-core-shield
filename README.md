@@ -119,7 +119,16 @@ See `docs/axioms-technical.md` for detailed implementation specifications.
 
 ## Agentic Stewardship (Draft)
 
-AEGIS can act as a non-force stewardship layer for agentic fleets, preserving recursive learning memory via DataQuad logging while keeping integrity checks at the gate. See the draft integration notes in `docs/agentic-stewardship.md`.  
+AEGIS can act as a non-force stewardship layer for agentic fleets, preserving recursive learning memory via DataQuad logging while keeping integrity checks at the gate. See the draft integration notes, JSONL envelope, privacy-by-default guidance, OpenClaw adapter skeleton, formal DataQuad schema, local steward server usage, and copy/paste integration example in `docs/agentic-stewardship.md`.  
+
+### Runtime Mode Selection
+
+The GUI now supports two operating modes:
+
+1. **Alongside OpenClaw** (sidecar steward mode)
+2. **AEGIS Agentic IDE** (native AEGIS-governed workspace mode)
+
+Use `npm run gui` and select the mode directly in the dashboard.
 
 ## License
 

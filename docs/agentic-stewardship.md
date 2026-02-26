@@ -1,6 +1,6 @@
 # Agentic Stewardship Integration (Draft)
 
-This document outlines how **AEGIS Core Shield** can serve as a non-force governance steward for agentic systems (e.g., OpenClaw) and their multi-agent fleets. The intent is to run AEGIS alongside an Agentic IDE, protecting integrity while preserving recursive learning memory across each agent’s **DataQuad** (temporal, contextual, and affective memory).
+This document outlines how **AEGIS Core Shield** can serve as a non-force governance steward for agentic systems (e.g., OpenClaw) and their multi-agent fleets. The intent is to run AEGIS alongside an Agentic IDE, protecting integrity while preserving recursive learning memory across each agent’s **DataQuad** (temporal, contextual, affective, and reflective memory).
 
 ## Steward Responsibilities
 
