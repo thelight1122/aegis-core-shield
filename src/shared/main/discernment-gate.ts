@@ -13,6 +13,7 @@ import { scoreLoyalty } from './virtue-scoring-loyalty';
 import { scoreTrust } from './virtue-scoring-trust';
 import { scoreCommunication } from './virtue-scoring-communication';
 import { initGateLogger, logGateEvaluation, GateLogEntry } from './gate-logger';
+import { processIDR, processIDQRA } from './reflection-engine';
 import * as crypto from 'crypto';
 
 export interface VirtueScores {
@@ -31,6 +32,8 @@ export interface GateResult {
   payload: string | ReturnPacket;
 }
 
+import { ReflectionSequence } from './reflection-engine';
+
 export interface ReturnPacket {
   status: 'discernment_gate_return';
   integrity: 0;
@@ -40,6 +43,7 @@ export interface ReturnPacket {
   realignment_observations: string[];
   original_prompt: string;
   action_taken: 'none – prompt not processed further';
+  reflection_sequence?: ReflectionSequence;
 }
 
 // Config (append-only – add new constants below if needed)
@@ -108,6 +112,14 @@ export function discernmentGate(prompt: string): GateResult {
       return { virtue, score, minUnit };
     });
 
+  // Determine which reflection sequence to use based on severity (lowest virtue score)
+  const lowestScore = Math.min(...fractureVirtues.map(f => f.score));
+  const sequenceProcessor = lowestScore < 0.5 ? processIDR : processIDQRA;
+  const reflectionSequence = sequenceProcessor(
+    fractureVirtues.map(f => f.minUnit).join(' | '),
+    [prompt]
+  );
+
   const returnPacket: ReturnPacket = {
     status: 'discernment_gate_return',
     integrity: 0,
@@ -128,6 +140,7 @@ export function discernmentGate(prompt: string): GateResult {
     ),
     original_prompt: prompt,
     action_taken: 'none – prompt not processed further',
+    reflection_sequence: reflectionSequence
   };
 
   // 7. Append-only persistent log

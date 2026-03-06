@@ -85,6 +85,38 @@
     margin: 6px 0;
 }
 
+.agent.log-ts {
+    font-size: 0.75rem;
+    color: #8b949e;
+    margin-bottom: 2px;
+}
+
+.reflection-sequence {
+    margin-top: 6px;
+    padding: 6px;
+    background: rgba(210, 168, 255, 0.1);
+    border: 1px solid rgba(210, 168, 255, 0.3);
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.reflection-sequence strong {
+    color: #d2a8ff;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.reflection-stage {
+    margin-bottom: 3px;
+    padding-left: 6px;
+    border-left: 1px solid #d2a8ff;
+}
+
+.stage-name {
+    color: #a5d6ff;
+    font-weight: 600;
+}
+
 .nebula-container {
     position: relative;
     width: 300px;
@@ -182,4 +214,415 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+/* Steward Monitor UI Styles */
+
+.sidecar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.live-indicator {
+    font-size: 12px;
+    font-weight: normal;
+    color: #8b949e;
+    margin-left: 10px;
+}
+
+.dispatcher-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.label-block {
+    display: block;
+}
+
+.bg-admitted {
+    background: #2ea043 !important;
+}
+
+.bg-rejected {
+    background: #f78166 !important;
+}
+
+.text-muted {
+    color: #8b949e;
+}
+
+.sidecar-endpoints {
+    font-size: 12px;
+    color: #8b949e;
+}
+
+.text-muted {
+    color: #8b949e;
+}
+
+.log-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    background: #0d1117;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+}
+
+.log-table th {
+    position: sticky;
+    top: 0;
+    background: #161b22;
+    color: #8b949e;
+    font-weight: 600;
+    padding: 10px;
+    border-bottom: 1px solid #30363d;
+}
+
+.log-table td {
+    padding: 10px;
+    border-bottom: 1px solid #21262d;
+}
+
+.log-table tr:last-child td {
+    border-bottom: none;
+}
+
+.mono-text {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+}
+
+.truncate {
+    display: inline-block;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-admitted {
+    background: rgba(46, 160, 67, 0.15);
+    color: #3fb950;
+    border: 1px solid rgba(46, 160, 67, 0.4);
+}
+
+.badge-rejected {
+    background: rgba(247, 129, 102, 0.15);
+    color: #ff7b72;
+    border: 1px solid rgba(247, 129, 102, 0.4);
+}
+
+.coherence-bar-container {
+    width: 100%;
+    height: 6px;
+    background: #21262d;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.coherence-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.empty-logs {
+    padding: 30px;
+    text-align: center;
+    color: #8b949e;
+}
+
+.empty-logs code {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background: #161b22;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* Agent DataQuad Styles */
+.data-quad-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.quad-cell {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 11px;
+}
+
+.quad-cell h4 {
+    margin: 0 0 4px 0;
+    color: #8b949e;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.quad-logs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.log-entry {
+    display: flex;
+    flex-direction: column;
+    color: #c9d1d9;
+}
+
+.log-entry .log-ts {
+    color: #8b949e;
+    font-size: 9px;
+}
+
+.agent-status.reflecting {
+    background: rgba(210, 168, 255, 0.2);
+    color: #d2a8ff;
+}
+
+.agent-status.error {
+    background: rgba(247, 129, 102, 0.2);
+    color: #ff7b72;
+}
+
+/* IDE Flow Panels imitating DataQuad Schema */
+.agentic-ide-fullscreen {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.ide-layout-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.ide-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ide-main-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.registry-panel,
+.dispatcher-panel {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.registry-panel h3,
+.dispatcher-panel h3 {
+    margin: 0;
+    color: #c9d1d9;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.registry-panel h4,
+.registry-panel h5 {
+    margin: 4px 0;
+    color: #8b949e;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.dispatcher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 12px;
+    margin-bottom: 6px;
+}
+
+.gate-badge {
+    background: rgba(88, 166, 255, 0.15);
+    color: #58a6ff;
+    border: 1px solid rgba(88, 166, 255, 0.4);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.dispatcher-controls,
+.registry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dispatcher-controls select,
+.dispatcher-controls textarea,
+.registry-form input,
+.registry-form select {
+    background: #0d1117;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.dispatcher-controls select:focus,
+.dispatcher-controls textarea:focus,
+.registry-form input:focus,
+.registry-form select:focus {
+    border-color: #58a6ff;
+    outline: none;
+}
+
+.dispatcher-controls button,
+.registry-form button {
+    background: #238636;
+    color: #ffffff;
+    border: 1px solid rgba(240, 246, 252, 0.1);
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    align-self: flex-start;
+}
+
+.dispatcher-controls button:hover:not(:disabled),
+.registry-form button:hover:not(:disabled) {
+    background: #2ea043;
+}
+
+.registry-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.registry-item {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.agent-selector {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 10px;
+    border-radius: 4px;
+    max-height: 120px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.agent-selector .label-block {
+    font-size: 13px;
+    color: #c9d1d9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.agent-selector input[type="checkbox"] {
+    margin: 0;
+}
+
+/* Workspace Target Operations */
+.workspace-panel {
+    margin-bottom: 20px;
+}
+
+.workspace-desc {
+    font-size: 13px;
+    margin: 0 0 10px 0;
+}
+
+.workspace-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.workspace-controls button {
+    background: #238636;
+    color: #ffffff;
+    border: 1px solid rgba(240, 246, 252, 0.1);
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    align-self: flex-start;
+}
+
+.workspace-controls button:hover:not(:disabled) {
+    background: #2ea043;
+}
+
+.workspace-path-display {
+    flex: 1;
+    padding: 8px 10px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.workspace-path-display.has-path {
+    color: #c9d1d9;
+}
+
+.workspace-path-display.no-path {
+    color: #8b949e;
 }
