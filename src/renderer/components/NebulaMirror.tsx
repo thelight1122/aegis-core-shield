@@ -7,7 +7,7 @@ interface NebulaMirrorProps {
 
 export default function NebulaMirror({ coherence, fracturedVirtues }: NebulaMirrorProps) {
     const isHighCoherence = coherence > 0.8;
-    const ringColor = isHighCoherence ? '#58a6ff' : '#f78166';
+    const ringColor = isHighCoherence ? '#58a6ff' : '#d2a8ff'; // Purple indicates structural realignment, not "bad"
 
     return (
         <>
@@ -18,7 +18,7 @@ export default function NebulaMirror({ coherence, fracturedVirtues }: NebulaMirr
                     animation: pulse ${3 - coherence * 2}s infinite ease-in-out;
                 }
                 .dynamic-middle-ring {
-                    border: 2px dashed ${fracturedVirtues.length === 0 ? '#2ea043' : '#f78166'};
+                    border: 2px dashed ${fracturedVirtues.length === 0 ? '#58a6ff' : '#d2a8ff'};
                 }
                 .dynamic-core-glow {
                     background: radial-gradient(circle, ${ringColor}, transparent);

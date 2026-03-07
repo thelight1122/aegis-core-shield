@@ -37,6 +37,17 @@ Admitted prompts automatically flow into the three-phase **IDS (Identify, Define
 AEGIS operates in two main modes:
 
 - **Alongside OpenClaw (Sidecar Mode):** Acts as a governance sidecar that ingests OpenClaw events, logs them using the DataQuad schema, and establishes an append-only memory of agent actions.
-- **AEGIS Agentic IDE:** A governed workspace where steward, research, and builder agents operate transparently under the Discernment Gate.
+- **AEGIS Agentic IDE (Full Deployment Center):** A governed workspace where Custom, Research, and Builder agents operate transparently under the Discernment Gate.
+
+### Advanced IDE Capabilities
+
+The AEGIS Agentic IDE has evolved into a robust deployment center:
+
+- **Swarm Topologies:** Assemble agents into cooperative Swarms (Round-Robin or Hierarchical) to tackle deep structural requests.
+- **DataQuad Persistence:** Agent states (Context, Affect, Memory, Learning) are securely serialized to JSON inside the Target Workspace.
+- **Reflection Engines (IDR & IDQRA):** Fractures in alignment automatically trigger structurally guided reflection sequences to gracefully realign the agent without coercion.
+- **Dynamic Tool Provisioning:** Agents can be assigned specific tools (`fs-reader`, `fs-writer`, `terminal-executor`). Destructive acts like file modifications require Steward approval through an Action Intercept UI.
+- **Tensor Distillation & Snapshotting:** Context size is managed by distilling deep tensors, and all `write` operations trigger an automatic workspace snapshot allowing zero-friction Rollbacks.
+- **Headless Daemon:** The IDE exposes a `deploy` bridge allowing active agent logic to run autonomously in the background daemon (Port 8787).
 
 In both modes, AEGIS strictly adheres to its axioms: append-only reality, non-force posture, weakest-link scoring, and default allow for aligned inputs.

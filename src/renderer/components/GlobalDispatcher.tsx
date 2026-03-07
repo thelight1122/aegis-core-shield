@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { AegisAgent, AegisSwarm } from '../types/ide';
+import React from 'react';
+import { AegisAgent, AegisSwarm, PendingAction } from '../types/ide';
+import CodeEditor from './CodeEditor';
+import { DiffEditor } from '@monaco-editor/react';
 
 interface GlobalDispatcherProps {
     agents: AegisAgent[];
     swarms: AegisSwarm[];
+    approvalQueue?: PendingAction[];
     onDispatch: (targetId: string, type: 'agent' | 'swarm', prompt: string) => void;
+    onResolveAction?: (actionId: string, approved: boolean) => void;
 }
 
-export default function GlobalDispatcher({ agents, swarms, onDispatch }: GlobalDispatcherProps) {
-    const [target, setTarget] = useState<string>('');
-    const [prompt, setPrompt] = useState('');
+export default function GlobalDispatcher({ agents, swarms, approvalQueue = [], onDispatch, onResolveAction }: GlobalDispatcherProps) {
+    const [target, setTarget] = React.useState<string>('');
+    const [prompt, setPrompt] = React.useState('');
 
     const handleDispatch = () => {
         if (!target || !prompt) return;
@@ -46,6 +50,37 @@ export default function GlobalDispatcher({ agents, swarms, onDispatch }: GlobalD
                     Dispatch Mission
                 </button>
             </div>
+
+            {approvalQueue.length > 0 && (
+                <div className="approval-queue-container mt-4">
+                    <h4 className="text-warning mb-2" style={{ color: '#d2a8ff' }}>Actions Awaiting Steward Approval</h4>
+                    <div className="approval-list">
+                        {approvalQueue.map(action => {
+                            const agent = agents.find(a => a.id === action.agentId);
+                            return (
+                                <div key={action.id} className="approval-card">
+                                    <div className="d-flex justify-content-between">
+                                        <strong>Agent: {agent?.name || action.agentId}</strong>
+                                        <span className="badge approval-badge">{action.type.toUpperCase()}</span>
+                                    </div>
+                                    <div className="mt-2 mb-2" style={{ border: '1px solid #30363d', borderRadius: '4px', overflow: 'hidden' }}>
+                                        <CodeEditor
+                                            height="150px"
+                                            readOnly
+                                            value={action.payload}
+                                            language={action.type === 'execute' ? 'shell' : 'javascript'}
+                                        />
+                                    </div>
+                                    <div className="approval-btn-group">
+                                        <button className="btn-approve" onClick={() => onResolveAction && onResolveAction(action.id, true)}>Approve (Run)</button>
+                                        <button className="btn-reject" onClick={() => onResolveAction && onResolveAction(action.id, false)}>Reject</button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

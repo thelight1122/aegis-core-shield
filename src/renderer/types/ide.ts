@@ -7,6 +7,15 @@ export interface MemoryEntry {
     sequenceData?: ReflectionSequence;
 }
 
+export interface PendingAction {
+    id: string;
+    agentId: string;
+    type: 'write' | 'execute';
+    payload: any;
+    filename?: string;
+    originalContent?: string;
+}
+
 export interface DataQuad {
     context: MemoryEntry[];
     affect: MemoryEntry[];
@@ -14,11 +23,19 @@ export interface DataQuad {
     learning: MemoryEntry[];
 }
 
+export interface AegisTool {
+    id: string;
+    name: string;
+    description: string;
+    restricted: boolean;
+}
+
 export interface AegisAgent {
     id: string;
     name: string;
     role: string;
-    status: 'idle' | 'active' | 'reflecting' | 'error';
+    status: 'idle' | 'active' | 'reflecting' | 'awaiting-approval' | 'error';
+    tools: AegisTool[];
     dataQuad: DataQuad;
 }
 
@@ -53,6 +70,14 @@ declare global {
             readWorkspaceFile: (workspacePath: string, relativePath: string) => Promise<{ content?: string; error?: string }>;
             saveAgent: (workspacePath: string, agentId: string, agentData: AegisAgent) => Promise<boolean>;
             loadAgent: (workspacePath: string, agentId: string) => Promise<AegisAgent | null>;
+            writeWorkspaceFile: (workspacePath: string, relativePath: string, content: string) => Promise<{ success?: boolean; error?: string }>;
+            executeTerminal: (workspacePath: string, command: string) => Promise<{ stdout?: string; stderr?: string; error?: string }>;
+            getDaemonToken: () => Promise<string | null>;
+            getMetrics: () => Promise<any>;
+            triggerAlert: (message: string, severity: 'info' | 'warning' | 'critical') => Promise<void>;
+            configureWebhook: (url: string) => Promise<void>;
+            getBackups: (workspacePath: string) => Promise<{ backups?: { filename: string, fullPath: string }[], error?: string }>;
+            restoreBackup: (workspacePath: string, backupFilename: string, relativeTarget: string) => Promise<{ success?: boolean; error?: string }>;
         };
     }
 }

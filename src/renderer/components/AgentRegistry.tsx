@@ -18,6 +18,7 @@ export default function AgentRegistry({ agents, onAddAgent }: AgentRegistryProps
             name,
             role,
             status: 'idle',
+            tools: [],
             dataQuad: createDefaultQuad(`Agent ${name} deployed with role ${role}`)
         };
         onAddAgent(newAgent);

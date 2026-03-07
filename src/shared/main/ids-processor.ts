@@ -200,9 +200,14 @@ export type ProcessPromptResult = IDSResult | ReturnPacket;
  * Gate-aware entrypoint for CLI/GUI/API flows.
  */
 export function processPrompt(rawPrompt: string): ProcessPromptResult {
-    const gateResult = discernmentGate(rawPrompt);
+    // 1. PEER captures & IDS processes everything as raw signal
+    const idsResult = runIDS(rawPrompt);
+
+    // 2. Discernment Gate routes based on structural integrity
+    const gateResult = discernmentGate(rawPrompt, idsResult);
+
     if (gateResult.admitted) {
-        return runIDS(gateResult.payload as string);
+        return idsResult;
     }
     return gateResult.payload as ReturnPacket;
 }

@@ -152,9 +152,9 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background: #f78166;
+    background: #d2a8ff;
     border-radius: 50%;
-    box-shadow: 0 0 10px #f78166;
+    box-shadow: 0 0 10px #d2a8ff;
     animation: pulse 2s infinite;
 }
 
@@ -243,12 +243,12 @@
     display: block;
 }
 
-.bg-admitted {
-    background: #2ea043 !important;
+.bg-processed {
+    background: #58a6ff !important;
 }
 
-.bg-rejected {
-    background: #f78166 !important;
+.bg-returned {
+    background: #d2a8ff !important;
 }
 
 .text-muted {
@@ -320,16 +320,16 @@
     text-transform: uppercase;
 }
 
-.badge-admitted {
-    background: rgba(46, 160, 67, 0.15);
-    color: #3fb950;
-    border: 1px solid rgba(46, 160, 67, 0.4);
+.badge-processed {
+    background: rgba(88, 166, 255, 0.15);
+    color: #58a6ff;
+    border: 1px solid rgba(88, 166, 255, 0.4);
 }
 
-.badge-rejected {
-    background: rgba(247, 129, 102, 0.15);
-    color: #ff7b72;
-    border: 1px solid rgba(247, 129, 102, 0.4);
+.badge-returned {
+    background: rgba(210, 168, 255, 0.15);
+    color: #d2a8ff;
+    border: 1px solid rgba(210, 168, 255, 0.4);
 }
 
 .coherence-bar-container {
@@ -625,4 +625,342 @@
 
 .workspace-path-display.no-path {
     color: #8b949e;
+}
+
+/* Swarm Topology Visualizer */
+
+.swarm-manager .registry-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.swarm-card {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 1rem;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+}
+
+.topology-visualizer {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #161b22;
+    border: 1px dashed #30363d;
+    border-radius: 6px;
+}
+
+.node-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #21262d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    color: #8b949e;
+    border: 2px solid #30363d;
+    margin-bottom: 4px;
+}
+
+.lead-avatar {
+    border-color: #d2a8ff;
+    color: #d2a8ff;
+    width: 40px;
+    height: 40px;
+}
+
+.peer-avatar {
+    border-color: #58a6ff;
+    color: #58a6ff;
+}
+
+.topology-tree.hierarchical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lead-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.lead-node::after {
+    content: '';
+    position: absolute;
+    bottom: -1.5rem;
+    left: 50%;
+    width: 2px;
+    height: 1.5rem;
+    background: #30363d;
+}
+
+.tree-branches {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+    justify-content: center;
+}
+
+.tree-branches::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #30363d;
+}
+
+.follower-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding-top: 1rem;
+}
+
+.follower-node::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 1rem;
+    background: #30363d;
+}
+
+.node-name {
+    font-size: 11px;
+    color: #c9d1d9;
+    text-align: center;
+    max-width: 60px;
+    word-wrap: break-word;
+}
+
+.topology-tree.round-robin .circular-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.peer-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.badge-outline {
+    border: 1px solid #8b949e;
+    color: #8b949e;
+    background: transparent;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 12px;
+}
+
+/* Agent Card Styles */
+
+.agent-header-titles {
+    display: flex;
+    flex-direction: column;
+}
+
+.dataquad-scrubber {
+    gap: 8px;
+    font-size: 10px;
+    color: #8b949e;
+}
+
+.scrubber-slider {
+    width: 80px;
+    accent-color: #58a6ff;
+}
+
+.agent-intervention-footer {
+    border-top: 1px solid #30363d;
+    padding-top: 10px;
+}
+
+.intervention-group {
+    gap: 0.5rem;
+}
+
+.intervention-input {
+    flex: 1;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    color: #c9d1d9;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+.btn-inject {
+    background: #1f6feb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+.btn-inject:hover {
+    background: #1158c7;
+}
+
+/* Monaco Editor Panel Styles */
+.monaco-pane {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.btn-close-editor {
+    background: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.btn-close-editor:hover {
+    background: #30363d;
+    color: #fff;
+}
+
+/* Rollback Panel Styles */
+.file-rollbacks-panel {
+    border-radius: 6px;
+}
+
+.file-rollbacks-title {
+    font-size: 13px;
+    color: #c9d1d9;
+    margin-bottom: 8px;
+}
+
+.file-rollbacks-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.rollback-filename {
+    font-size: 11px;
+    word-break: break-all;
+    max-width: 70%;
+    color: #8b949e;
+}
+
+.rollback-btn {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+}
+
+.rollback-btn:hover {
+    background: #30363d;
+    color: #fff;
+}
+
+/* ToolManager Styles */
+.tool-agent-select {
+    background: #0d1117;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    font-size: 12px;
+    padding: 4px;
+}
+
+.tools-available-title {
+    font-size: 11px;
+    color: #8b949e;
+    margin-bottom: 8px;
+}
+
+.tool-item-assigned {
+    border: 1px solid #1f6feb;
+}
+
+.tool-item-unassigned {
+    border: 1px solid #30363d;
+}
+
+.tool-name-assigned {
+    font-size: 12px;
+    color: #58a6ff;
+}
+
+.tool-name-unassigned {
+    font-size: 12px;
+    color: #c9d1d9;
+}
+
+.tool-badge-restricted {
+    font-size: 9px;
+}
+
+.tool-desc {
+    font-size: 10px;
+    color: #8b949e;
+}
+
+.tool-action-btn {
+    font-size: 10px;
+    padding: 2px 8px;
+}
+
+.tool-unselected-msg {
+    font-size: 11px;
+}
+
+.btn-distill {
+    border: 1px solid #d2a8ff;
+    color: #d2a8ff;
+    background: #21262d;
+}
+
+.btn-distill:hover {
+    background: #30363d;
+    color: #fff;
+    border: 1px solid #d2a8ff;
+}
+
+/* AgentCard Dynamic Classes */
+.agent-card-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.agent-card-scrubber {
+    gap: 8px;
+    font-size: 10px;
+    color: #8b949e;
+}
+
+.agent-scrub-input {
+    width: 80px;
+    accent-color: #58a6ff;
+}
+
+.btn-deploy-daemon {
+    font-size: 10px;
+    padding: 2px 6px;
 }

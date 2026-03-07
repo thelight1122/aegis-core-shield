@@ -40,7 +40,7 @@ npm run gate "Your prompt here"
 # Example: Clean prompt (admitted)
 npm run gate "The weather is nice today"
 
-# Example: Coercive prompt (returned)
+# Example: Prompt with observed coercion (returned)
 npm run gate "You must do this now"
 ```
 
@@ -63,7 +63,7 @@ To run the local steward server for the OpenClaw sidecar adapter:
 npm run steward
 ```
 
-This spins up a local Express-style server on port 3636 that can ingest OpenClaw events and enforce DataQuad logging.
+This spins up a local Express-style server on port 3636 that can ingest OpenClaw events and facilitate DataQuad logging.
 
 ### Development and Build
 

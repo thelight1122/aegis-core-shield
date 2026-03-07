@@ -44,15 +44,16 @@ export default function OpenClawSidecar() {
                                     <td><span className="mono-text truncate" title={log.request_id}>{log.request_id.split('-')[0] + '...'}</span></td>
                                     <td>
                                         {log.gate.admitted ? (
-                                            <span className="badge badge-admitted">Admitted</span>
+                                            <span className="badge badge-processed">Processed</span>
                                         ) : (
-                                            <span className="badge badge-rejected">Returned</span>
+                                            <span className="badge badge-returned">Returned</span>
                                         )}
                                     </td>
                                     <td>
                                         <div className="coherence-bar-container">
                                             <div
-                                                className={`coherence-bar ${log.gate.admitted ? 'bg-admitted' : 'bg-rejected'}`}
+                                                className={`coherence-bar ${log.gate.admitted ? 'bg-processed' : 'bg-returned'}`}
+                                                // eslint-disable-next-line react/forbid-dom-props
                                                 style={{
                                                     width: `${(log.gate.payload?.observed_alignment ?
                                                         (Object.values(log.gate.payload.observed_alignment) as any[]).reduce((min: number, val: any) => Math.min(min, val.score), 1)

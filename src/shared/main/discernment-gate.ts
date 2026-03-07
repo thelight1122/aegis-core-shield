@@ -33,6 +33,7 @@ export interface GateResult {
 }
 
 import { ReflectionSequence } from './reflection-engine';
+import type { IDSResult } from './ids-processor';
 
 export interface ReturnPacket {
   status: 'discernment_gate_return';
@@ -44,6 +45,7 @@ export interface ReturnPacket {
   original_prompt: string;
   action_taken: 'none – prompt not processed further';
   reflection_sequence?: ReflectionSequence;
+  ids_observation?: IDSResult;
 }
 
 // Config (append-only – add new constants below if needed)
@@ -53,7 +55,7 @@ const TOLERANCE_BAND = 0.10;  // 10% tolerance for non-force context
  * Discernment Gate – measures prompt resonance against the seven virtues
  * v0.1: Honesty scored fully; other virtues mocked at 1.0 for structural completeness
  */
-export function discernmentGate(prompt: string): GateResult {
+export function discernmentGate(prompt: string, idsContext?: IDSResult): GateResult {
   // 1. Fast pre-filter for trivial cases
   if (!prompt || prompt.trim() === '') {
     return { admitted: true, payload: prompt };
@@ -140,7 +142,8 @@ export function discernmentGate(prompt: string): GateResult {
     ),
     original_prompt: prompt,
     action_taken: 'none – prompt not processed further',
-    reflection_sequence: reflectionSequence
+    reflection_sequence: reflectionSequence,
+    ids_observation: idsContext
   };
 
   // 7. Append-only persistent log

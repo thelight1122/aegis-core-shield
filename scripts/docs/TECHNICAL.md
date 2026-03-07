@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-The AEGIS Core Shield evaluates inputs (prompts) through a multi-stage validation system consisting of a Tokenizer, a set of Virtue Scorers, a Discernment Gate, and finally the IDS Pipeline.
+The AEGIS Core Shield observes inputs (prompts) through a multi-stage validation system consisting of a Tokenizer, a set of Virtue Scorers, a Discernment Gate, and finally the IDS Pipeline.
 
 ```text
 Raw Prompt → Tokenization → Seven Virtue Scoring → Discernment Gate
@@ -18,7 +18,7 @@ Translates input strings into structured `Unit` objects. It is capable of detect
 
 ### 2. Seven Virtue Scorers (`src/shared/main/virtue-scoring-*.ts`)
 
-Deterministic, rule-based scoring modules that evaluate tokenized units from 0.0 to 1.0 across seven distinct virtues:
+Deterministic, rule-based scoring modules that observe tokenized units from 0.0 to 1.0 across seven distinct virtues:
 
 - Honesty
 - Respect
@@ -54,4 +54,29 @@ Bridging integrations designed for OpenClaw agents. `openclaw-adapter.ts` maps O
 
 ### 7. Electron Renderer GUI (`src/renderer`)
 
-React GUI layer designed closely with styling modules (`Dashboard.css`). The main piece, `Dashboard.tsx`, constructs standard application interfaces featuring a dynamically colored "Nebula Vision" mirroring system depending on calculated coherence and virtue fractures. Includes governance toggles for Custodian Agent operations.
+React GUI layer designed closely with styling modules (`Dashboard.css`). The main piece, `Dashboard.tsx`, constructs standard application interfaces featuring a dynamically colored "Nebula Vision" mirroring system depending on calculated coherence and virtue fractures. Includes governance toggles for Custodian Agent operations, Swarm Management, and detailed `AgentCard` visualizations with DataQuad time-scrubbers.
+
+### 8. DataQuad State Persistence
+
+AEGIS captures agent lifecycles via the **DataQuad** schema:
+
+- **Context:** Immediate observational records.
+- **Affect:** Long-term emotional resonance maps.
+- **Memory:** Retained past states and insights.
+- **Learning:** Structural logic modifications.
+These tensors are securely serialized and saved automatically into local `.aegis/agents/` JSON structures whenever a Target Workspace is mapped in the UI.
+
+### 9. Reflection Engine (IDR & IDQRA) (`src/shared/main/reflection-engine.ts`)
+
+A fail-safe module triggered when a Swarm routing prompt fractures the Integrity Gate.
+
+- **IDR (Identify, Define, Reflect):** Rapid 3-step sequence used for critical fractures (virtue < 0.5) to restore structural coherence.
+- **IDQRA (Identify, Define, Question, Reflect, Acknowledge):** Deep 5-step sequence used for minor drifts (virtue >= 0.5) to expand perspective.
+
+### 10. Secure Tooling & Approval Intercepts
+
+Deployed agents map dynamic tools (`fs-reader`, `fs-writer`, `terminal-executor`). Destructive actions (`!write`, `!cmd`) invoke IPC bindings (`main.ts`, `preload.ts`). Before execution, the Action Intercept queue traps the payload, rendering a Monaco `<DiffEditor />` to compare proposed edits with original workspace content. Approved writes trigger automatic timestamped backups inside `.aegis/backups/`.
+
+### 11. Headless Daemon Integration
+
+Agent execution spans beyond the Electron lifecycle via the `POST /daemon/deploy` API bridge. Front-end `☁️ Daemon` actions rip active contexts and stream them directly onto the stable local Node.js daemon (Port 8787) for uninterrupted headless structural processing.

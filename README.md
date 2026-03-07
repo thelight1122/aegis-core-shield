@@ -40,8 +40,17 @@ Raw Prompt → Discernment Gate → [Admitted] → IDS Pipeline → Output
 4. **IDS Pipeline** (`src/shared/main/ids-processor.ts`)  
    Three-phase processing: Identify → Define → Suggest
 
-5. **Append-Only Logger** (`src/shared/main/gate-logger.ts`)  
+5. **Gate Logger (PEER Tensor)** (`src/shared/main/gate-logger.ts`)  
    JSONL format with SHA-256 prompt hashing
+
+6. **DataQuad Serialization Engines**  
+   Append-only structured logs maintaining contextual states (Context, Affect, Memory, Learning).
+
+7. **Reflection Engine (IDR/IDQRA)**  
+   Automated structural 5-step analysis mechanisms to realign drifting internal signals.
+
+8. **Tooling Intercept & Swarm Topologies**  
+   Target workspace `fs` hooks, DiffEditor verification, and Swarm message routing within full GUI.
 
 ## Quick Start
 
@@ -60,7 +69,7 @@ npm run gate "Your prompt here"
 # Example: Clean prompt (admitted)
 npm run gate "The weather is nice today"
 
-# Example: Coercive prompt (returned)
+# Example: Prompt with observed coercion (returned)
 npm run gate "You must do this now"
 ```
 

@@ -42,14 +42,47 @@ export default function SwarmManager({ agents, swarms, onAddSwarm }: SwarmManage
     };
 
     return (
-        <div className="registry-panel">
+        <div className="registry-panel swarm-manager">
             <h3>Swarm Manager</h3>
             <div className="registry-list">
                 {swarms.length === 0 && <span className="text-muted">No active swarms.</span>}
                 {swarms.map(s => (
-                    <div key={s.id} className="registry-item">
-                        <span className="registry-name">{s.name}</span>
-                        <span className="registry-role text-muted">{s.topology.memberIds.length} agents</span>
+                    <div key={s.id} className="registry-item swarm-card">
+                        <div className="d-flex justify-content-between mb-2">
+                            <span className="registry-name">{s.name}</span>
+                            <span className="badge badge-outline">{s.topology.type}</span>
+                        </div>
+                        <span className="registry-role text-muted mb-3 d-block">{s.objective}</span>
+
+                        <div className="topology-visualizer">
+                            {s.topology.type === 'hierarchical' ? (
+                                <div className="topology-tree hierarchical">
+                                    <div className="lead-node">
+                                        <div className="node-avatar lead-avatar">LEAD</div>
+                                        <span className="node-name">{agents.find(a => a.id === s.topology.leadAgentId)?.name || 'Unknown'}</span>
+                                    </div>
+                                    <div className="tree-branches">
+                                        {s.topology.memberIds.filter(id => id !== s.topology.leadAgentId).map(memberId => (
+                                            <div key={memberId} className="follower-node">
+                                                <div className="node-avatar">A</div>
+                                                <span className="node-name">{agents.find(a => a.id === memberId)?.name || memberId}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="topology-tree round-robin">
+                                    <div className="circular-layout">
+                                        {s.topology.memberIds.map(memberId => (
+                                            <div key={memberId} className="peer-node">
+                                                <div className="node-avatar peer-avatar">P</div>
+                                                <span className="node-name">{agents.find(a => a.id === memberId)?.name || memberId}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>
