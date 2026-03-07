@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog, IpcMainInvokeEvent } from 'electro
 import * as path from 'path';
 import * as fs from 'fs';
 import * as util from 'util';
+import * as http from 'http';
 import { processPrompt } from './ids';
 import { initDatabase, saveAgentToDb, loadAgentFromDb, getSystemMetrics } from '../shared/main/db/database';
 import { sendAlert, configureWebhook } from '../shared/main/webhook-alerts';
@@ -252,3 +253,59 @@ ipcMain.handle('aegis:configureWebhook', async (_: IpcMainInvokeEvent, url: stri
     return configureWebhook(url);
 });
 
+ipcMain.handle('aegis:fetchPrimeStatus', async () => {
+    return new Promise((resolve) => {
+        const primeUrl = process.env.AEGIS_PRIME_URL || 'http://localhost:8888';
+        http.get(`${primeUrl}/status`, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    resolve(JSON.parse(data));
+                } catch (e) {
+                    resolve({ error: 'Failed to parse Prime status' });
+                }
+            });
+        }).on('error', (err) => {
+            resolve({ error: `Prime unreachable: ${err.message}` });
+        });
+    });
+});
+
+ipcMain.handle('aegis:fetchPrimeImpact', async () => {
+    return new Promise((resolve) => {
+        const primeUrl = process.env.AEGIS_PRIME_URL || 'http://localhost:8888';
+        http.get(`${primeUrl}/impact`, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    resolve(JSON.parse(data));
+                } catch (e) {
+                    resolve({ error: 'Failed to parse Prime impact' });
+                }
+            });
+        }).on('error', (err) => {
+            resolve({ error: `Prime unreachable: ${err.message}` });
+        });
+    });
+});
+
+ipcMain.handle('aegis:fetchPrimeSignals', async () => {
+    return new Promise((resolve) => {
+        const primeUrl = process.env.AEGIS_PRIME_URL || 'http://localhost:8888';
+        http.get(`${primeUrl}/signals`, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    resolve(JSON.parse(data));
+                } catch (e) {
+                    resolve({ error: 'Failed to parse Prime signals' });
+                }
+            });
+        }).on('error', (err) => {
+            resolve({ error: `Prime unreachable: ${err.message}` });
+        });
+    });
+});

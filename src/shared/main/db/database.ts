@@ -24,7 +24,8 @@ export function initDatabase(workspacePath: string) {
             name TEXT,
             role TEXT,
             status TEXT,
-            tools_json TEXT
+            tools_json TEXT,
+            swarm_id TEXT -- I-15: grouping for collective coherence
         );
 
         CREATE TABLE IF NOT EXISTS dataquad_entries (
@@ -34,9 +35,14 @@ export function initDatabase(workspacePath: string) {
             timestamp TEXT,
             content TEXT,
             sequence_json TEXT, -- for reflection data
+            topology_index TEXT, -- I-12: structural index
             FOREIGN KEY(agent_id) REFERENCES agents(id)
         );
     `);
+}
+
+export function isDatabaseInitialized() {
+    return db !== null;
 }
 
 export function getDb() {
@@ -49,13 +55,14 @@ export function saveAgentToDb(agent: any) {
 
     // 1. Upsert Agent
     const upsertAgent = database.prepare(`
-        INSERT INTO agents (id, name, role, status, tools_json)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO agents (id, name, role, status, tools_json, swarm_id)
+        VALUES (?, ?, ?, ?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET
             name=excluded.name,
             role=excluded.role,
             status=excluded.status,
-            tools_json=excluded.tools_json
+            tools_json=excluded.tools_json,
+            swarm_id=excluded.swarm_id
     `);
 
     upsertAgent.run(
@@ -63,7 +70,8 @@ export function saveAgentToDb(agent: any) {
         agent.name,
         agent.role,
         agent.status,
-        JSON.stringify(agent.tools || [])
+        JSON.stringify(agent.tools || []),
+        agent.swarmId || null
     );
 
     // 2. Clear existing entries for this agent (or implement append-only logic better)
@@ -72,8 +80,8 @@ export function saveAgentToDb(agent: any) {
     database.prepare('DELETE FROM dataquad_entries WHERE agent_id = ?').run(agent.id);
 
     const insertEntry = database.prepare(`
-        INSERT INTO dataquad_entries (agent_id, tensor_type, timestamp, content, sequence_json)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO dataquad_entries (agent_id, tensor_type, timestamp, content, sequence_json, topology_index)
+        VALUES (?, ?, ?, ?, ?, ?)
     `);
 
     const insertTensor = (type: string, entries: any[]) => {
@@ -83,11 +91,11 @@ export function saveAgentToDb(agent: any) {
                 type,
                 entry.timestamp,
                 entry.content,
-                entry.sequenceData ? JSON.stringify(entry.sequenceData) : null
+                entry.sequenceData ? JSON.stringify(entry.sequenceData) : null,
+                entry.topologyIndex || null
             );
         }
     };
-
     insertTensor('context', agent.dataQuad.context);
     insertTensor('affect', agent.dataQuad.affect);
     insertTensor('memory', agent.dataQuad.memory);
@@ -107,6 +115,7 @@ export function loadAgentFromDb(agentId: string) {
         name: agentRow.name,
         role: agentRow.role,
         status: agentRow.status,
+        swarmId: agentRow.swarm_id,
         tools: JSON.parse(agentRow.tools_json),
         dataQuad: {
             context: [],
@@ -120,7 +129,8 @@ export function loadAgentFromDb(agentId: string) {
         const tensorEntry = {
             timestamp: entry.timestamp,
             content: entry.content,
-            sequenceData: entry.sequence_json ? JSON.parse(entry.sequence_json) : undefined
+            sequenceData: entry.sequence_json ? JSON.parse(entry.sequence_json) : undefined,
+            topologyIndex: entry.topology_index
         };
         (agent.dataQuad as any)[entry.tensor_type].push(tensorEntry);
     }
@@ -138,4 +148,59 @@ export function getSystemMetrics() {
         totalAgents: agentsRow.count,
         totalEntries: entriesRow.count
     };
+}
+
+/**
+ * Collective Memory Lookup for Swarms (I-15)
+ */
+export function loadSwarmMemories(swarmId: string): any[] {
+    const database = getDb();
+    const query = `
+        SELECT e.* FROM dataquad_entries e
+        JOIN agents a ON e.agent_id = a.id
+        WHERE a.swarm_id = ? AND e.tensor_type = 'memory'
+        ORDER BY e.timestamp DESC
+    `;
+    const rows = database.prepare(query).all(swarmId) as any[];
+    return rows.map(r => ({
+        timestamp: r.timestamp,
+        content: r.content,
+        topologyIndex: r.topology_index
+    }));
+}
+
+/**
+ * Collective Learning Lookup for Swarms (I-21)
+ */
+export function loadSwarmLearnings(swarmId: string): any[] {
+    const database = getDb();
+    const query = `
+        SELECT e.* FROM dataquad_entries e
+        JOIN agents a ON e.agent_id = a.id
+        WHERE a.swarm_id = ? AND e.tensor_type = 'learning'
+        ORDER BY e.timestamp DESC
+    `;
+    const rows = database.prepare(query).all(swarmId) as any[];
+    return rows.map(r => ({
+        timestamp: r.timestamp,
+        content: r.content
+    }));
+}
+
+/**
+ * Collective Affect Lookup for Swarms (I-23)
+ */
+export function loadSwarmAffects(swarmId: string): any[] {
+    const database = getDb();
+    const query = `
+        SELECT e.* FROM dataquad_entries e
+        JOIN agents a ON e.agent_id = a.id
+        WHERE a.swarm_id = ? AND e.tensor_type = 'affect'
+        ORDER BY e.timestamp DESC
+    `;
+    const rows = database.prepare(query).all(swarmId) as any[];
+    return rows.map(r => ({
+        timestamp: r.timestamp,
+        content: r.content
+    }));
 }

@@ -14,5 +14,8 @@ contextBridge.exposeInMainWorld('aegisAPI', {
   triggerAlert: (message: string, severity: string) => ipcRenderer.invoke('aegis:triggerAlert', message, severity),
   configureWebhook: (url: string) => ipcRenderer.invoke('aegis:configureWebhook', url),
   getBackups: (workspacePath: string) => ipcRenderer.invoke('aegis:getBackups', workspacePath),
-  restoreBackup: (workspacePath: string, backupFilename: string, relativeTarget: string) => ipcRenderer.invoke('aegis:restoreBackup', workspacePath, backupFilename, relativeTarget)
+  restoreBackup: (workspacePath: string, backupFilename: string, relativeTarget: string) => ipcRenderer.invoke('aegis:restoreBackup', workspacePath, backupFilename, relativeTarget),
+  fetchPrimeStatus: () => ipcRenderer.invoke('aegis:fetchPrimeStatus'),
+  fetchPrimeImpact: () => ipcRenderer.invoke('aegis:fetchPrimeImpact'),
+  fetchPrimeSignals: () => ipcRenderer.invoke('aegis:fetchPrimeSignals')
 });

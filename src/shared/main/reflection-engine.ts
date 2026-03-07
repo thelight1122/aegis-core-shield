@@ -27,15 +27,15 @@ export function processIDR(signal: string, context: string[]): ReflectionSequenc
         stages: [
             {
                 stage: 'Identify',
-                content: `Signal observed: ${signal}`
+                content: `Signal topology observed: ${signal}`
             },
             {
                 stage: 'Define',
-                content: `Boundary tension detected concerning structural constraints in context: ${context[context.length - 1] || 'Unknown'}.`
+                content: `Boundary tension detected in structural unit grounded in context: ${context[context.length - 1] || 'Unknown'}.`
             },
             {
                 stage: 'Reflect',
-                content: `Holding mirror: This path compresses choice. Agency is reserved for self-observation without direction.`
+                content: `Holding mirror: High-force signal patterns exhibit choice compression. Agency reserved for structural observation.`
             }
         ]
     };
@@ -52,23 +52,23 @@ export function processIDQRA(signal: string, context: string[]): ReflectionSeque
         stages: [
             {
                 stage: 'Identify',
-                content: `Signal or drift observed: ${signal}`
+                content: `Signal or drift pattern observed: ${signal}`
             },
             {
                 stage: 'Define',
-                content: `Evaluating pattern in relation to Axioms/Virtues, grounded in context: ${context[context.length - 1] || 'Unknown'}.`
+                content: `Observing structural presence in relation to Axioms/Virtues, grounded in context: ${context[context.length - 1] || 'Unknown'}.`
             },
             {
                 stage: 'Question',
-                content: `What structural or emotional necessity is driving this signal? What do you notice here?`
+                content: `Notice the structural presence of this signal. What do you observe about its geometry or orientation?`
             },
             {
                 stage: 'Reflect',
-                content: `Holding mirror for integration. Observation without judgement.`
+                content: `Holding mirror for integration. Observing without valence.`
             },
             {
                 stage: 'Acknowledge',
-                content: `This signal is seen and valid within the field. No force required.`
+                content: `This signal pattern is present and valid within the structural field. Continuity maintained.`
             }
         ]
     };

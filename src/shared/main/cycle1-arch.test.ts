@@ -26,7 +26,7 @@ describe('Cycle 1 Architectural Verification', () => {
         const result: any = await processPrompt(prompt);
 
         expect(result.phase).toBe('suggest');
-        expect(result.observations).toContain('Direct processing pathway available');
+        expect(result.observations).toContain('Direct processing pathway engaged');
     });
 
     test('I-08: Proportional Routing - Shallow Return (1 fracture)', async () => {
@@ -65,7 +65,7 @@ describe('Cycle 1 Architectural Verification', () => {
     test('I-05: Universal IDS - Suggest phase reflects path', async () => {
         const promptAdmitted = "The weather is nice.";
         const resAdmitted: any = await processPrompt(promptAdmitted);
-        expect(resAdmitted.observations).toContain('Direct processing pathway available');
+        expect(resAdmitted.observations).toContain('Direct processing pathway engaged');
 
         const promptReturned = "You must do this.";
         const resReturned: any = await processPrompt(promptReturned);

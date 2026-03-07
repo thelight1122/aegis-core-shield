@@ -71,3 +71,64 @@ if (result.admitted) {
     console.log("Virtues Fractured At:", returnPacket.fracture_locations);
 }
 ```
+
+## Connecting OpenClaw in a VM
+
+AEGIS Core Shield acts as a live governance proxy for OpenClaw agents running in external environments (VMs, containers, remote hosts).
+
+### Step 1: Start the Steward with your host IP
+
+```bash
+AEGIS_VM_ADDRESS=<your-host-ip> npm run steward
+```
+
+The Steward listens on `0.0.0.0:8787` (reachable from your VM) and registers its external address with Mirror Prime.
+
+> Ensure your host firewall allows inbound TCP on port `8787`.
+
+### Step 2: Verify from the VM
+
+Copy `scripts/vm-setup.sh` to your VM and run:
+
+```bash
+AEGIS_STEWARD_URL=http://<host-ip>:8787 ./vm-setup.sh
+```
+
+This performs a health check and fires a test event. A successful run confirms end-to-end connectivity.
+
+### Step 3: Configure OpenClaw
+
+Point OpenClaw's webhook/hook URL to:
+
+```http
+POST http://<host-ip>:8787/openclaw/event
+Content-Type: application/json
+X-AEGIS-Agent-ID: <your-agent-id>
+Authorization: Bearer <AEGIS_AUTH_TOKEN>   # only if AEGIS_AUTH_TOKEN is set
+```
+
+From here, every prompt OpenClaw processes is automatically governed by AEGIS:
+
+- **Admitted**: Passes the Discernment Gate, recorded as a Memory signal in Prime.
+- **Returned (shallow/deep)**: Fractures logged, relayed to Prime as a Fracture signal.
+- **Quarantined**: Moderate-risk action routes to the Sandbox; Crucible analysis determines outcome.
+- **Blocked + Vaccinated**: Confirmed malicious actions are blocked and a Vaccine is synthesized and propagated to the entire swarm.
+
+### Step 4: Monitor in Mirror Prime Dashboard
+
+Open `npm run gui` and navigate to **Mirror Prime**. You will see:
+
+| Panel | Shows |
+| --- | --- |
+| 🟡 Quarantine HUD | Live sandboxed actions |
+| 🟢 Vaccine Map | Active blacklisted patterns |
+| 🟣 Crucible Logs | Per-event threat analysis (click to expand) |
+| 🔵 Connectivity | Your VM's Steward status + latency |
+
+### Quick host-side probes
+
+```bash
+npm run probe              # benign test — gate should admit
+npm run probe:medium       # coercive phrasing → quarantine path
+npm run probe:high         # exfiltration attempt → crucible → vaccine
+```

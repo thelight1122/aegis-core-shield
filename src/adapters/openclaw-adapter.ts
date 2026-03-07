@@ -84,7 +84,7 @@ export const processOpenClawEvent = async (
   event: OpenClawEvent,
   options: OpenClawAdapterOptions = {}
 ): Promise<OpenClawLogEntry> => {
-  const result = await processPrompt(event.prompt);
+  const result = await processPrompt(event.prompt, event.agentId);
 
   const admitted = !('status' in result && result.status === 'discernment_gate_return');
   const gateResult: GateResult = {

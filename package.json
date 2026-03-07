@@ -20,7 +20,10 @@
         "test:watch": "jest --watch",
         "clean": "rimraf dist",
         "typecheck": "tsc --noEmit",
-        "steward": "ts-node src/cli/steward-server.ts"
+        "steward": "ts-node src/cli/steward-server.ts",
+        "probe": "ts-node scripts/test-probe.ts",
+        "probe:medium": "ts-node scripts/test-probe.ts --risk medium",
+        "probe:high": "ts-node scripts/test-probe.ts --risk high"
     },
     "keywords": [
         "aegis",

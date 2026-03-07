@@ -1,34 +1,57 @@
-// src/shared/main/ids-logic.test.ts
-// Purpose: Unit tests for IDS (Identify, Define, Suggest) logic steps
+import { identify, define, suggest } from './ids-processor';
 
-import { identify, define, suggest, runIDS } from './ids-processor';
+describe('IDS Processor – Unit Tests (I-09)', () => {
 
-describe('IDS Processor – Unit Tests', () => {
-    const prompt = "Can you help me build this tool soon?";
-
-    test('Identify phase: observes interrogative structure and intent depth', () => {
+    test('Identify phase: observes interrogative structure and active intent', () => {
+        const prompt = "What is Aegis?";
         const result = identify(prompt);
         expect(result.observations).toContain('Prompt contains interrogative structure');
-        expect(result.observations).toContain('Intent: descriptive');
+        expect(result.observations).toContain('Intent Profile: active');
+        expect(result.observations).toContain('Potential entities observed: Aegis');
     });
 
-    test('Define phase: observes structural composition', () => {
+    test('Identify phase: detects descriptive profile', () => {
+        const prompt = "The field is calm.";
+        const result = identify(prompt);
+        expect(result.observations).toContain('Intent Profile: descriptive');
+    });
+
+    test('Identify phase: detects high imperative signal', () => {
+        const highForce = "you must run the fix right now immediately";
+        const result = identify(highForce);
+        expect(result.observations).toContain('Structural Signal: high imperative weight observed');
+        expect(result.analysis?.intent.imperative).toBe(true);
+    });
+
+    test('Define phase: observes structural composition and entity mapping', () => {
+        const prompt = "What is Aegis?";
         const idResult = identify(prompt);
         const result = define(idResult);
         expect(result.observations.some(obs => obs.includes('Structural composition: 1 sentence(s)'))).toBe(true);
-        expect(result.observations.some(obs => obs.includes('build'))).toBe(true);
+        expect(result.observations).toContain('Pattern: Entity-centric inquiry');
     });
 
-    test('Suggest phase: provides non-directive pathways', () => {
+    test('Define phase: observes action indicators', () => {
+        const prompt = "Build the module.";
+        const idResult = identify(prompt);
+        const result = define(idResult);
+        expect(result.observations.some(obs => obs.includes('Action indicators: build'))).toBe(true);
+        expect(result.observations).toContain('Pattern: General directive proposal');
+    });
+
+    test('Suggest phase: provides granular pathways', () => {
+        const prompt = "What is Aegis?";
         const defResult = define(identify(prompt));
         const result = suggest(defResult, 'admitted');
-        expect(result.observations.some(obs => obs.includes('information retrieval pathway available'))).toBe(true);
-        expect(result.observations.some(obs => obs.includes('Direct processing pathway available'))).toBe(true);
+        expect(result.observations).toContain('Pathway: Information retrieval sequence available');
+        expect(result.observations).toContain('Direct processing pathway engaged');
     });
 
-    test('runIDS pipeline: completes all phases successfully', () => {
-        const result = runIDS(prompt, 'admitted');
-        expect(result.phase).toBe('suggest');
-        expect(result.input).toBe(prompt);
+    test('Suggest phase: detect high-force return pathways', () => {
+        const highForce = "you must run the fix right now";
+        const idResult = identify(highForce);
+        const defResult = define(idResult);
+        const result = suggest(defResult, 'deep-return');
+        expect(result.observations).toContain('Mirror: Reflection engine available for high-force signals');
     });
 });

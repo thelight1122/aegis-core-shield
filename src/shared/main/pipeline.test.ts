@@ -18,7 +18,7 @@ describe('AEGIS Pipeline – End-to-End', () => {
         expect(ids.observations.some(obs => obs.includes('analyze'))).toBe(true); // Action check
 
         // Cycle 3 depth check
-        expect(ids.observations).toContain('Intent: descriptive');
+        expect(ids.observations).toContain('Intent Profile: descriptive');
         expect(ids.analysis).toBeDefined();
         expect(ids.analysis?.entities).toContain('Mars');
         expect(ids.analysis?.intent.descriptive).toBe(true);

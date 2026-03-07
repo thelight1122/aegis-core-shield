@@ -66,6 +66,9 @@ declare global {
         aegisAPI: {
             processPrompt: (prompt: string) => Promise<any>;
             fetchStewardLogs: (limit?: number) => Promise<any>;
+            fetchPrimeStatus: () => Promise<any>;
+            fetchPrimeImpact: () => Promise<any>;
+            fetchPrimeSignals: () => Promise<any>;
             selectWorkspace: () => Promise<string | null>;
             readWorkspaceFile: (workspacePath: string, relativePath: string) => Promise<{ content?: string; error?: string }>;
             saveAgent: (workspacePath: string, agentId: string, agentData: AegisAgent) => Promise<boolean>;

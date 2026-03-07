@@ -1,4 +1,5 @@
-OBS-OPEN PATTERN BRIEF
+# OBS-OPEN PATTERN BRIEF
+
 ═══════════════════════════════════════════════════════════
 CYCLE:               2
 DATE:                2026-03-07

@@ -51,7 +51,7 @@ Persistent logging mechanism writing observations to a JSONL file format, establ
 
 ### 6. Stewarding & OpenClaw Ingestion (`src/adapters`)
 
-Bridging integrations designed for OpenClaw agents. `openclaw-adapter.ts` maps OpenClaw events into the core AEGIS engine, persisting to DataQuad compliant schemas via `dataquad-schema.ts`. Employs an Express server `steward-server.ts` running locally (default port 3636) to continuously ingest log events. Employs SSSP (Stable State Snapshot Protocol) to capture pre-escalation configurations.
+Bridging integrations designed for OpenClaw agents. `openclaw-adapter.ts` maps OpenClaw events into the core AEGIS engine, persisting to DataQuad compliant schemas via `dataquad-schema.ts`. `openclaw-ingest.ts` starts an HTTP server (default port **8787**, configurable via `AEGIS_STEWARD_PORT`) to continuously ingest events. Employs SSSP (Stable State Snapshot Protocol) to capture pre-escalation configurations.
 
 ### 7. Electron Renderer GUI (`src/renderer`)
 
@@ -81,3 +81,55 @@ Deployed agents map dynamic tools (`fs-reader`, `fs-writer`, `terminal-executor`
 ### 11. Headless Daemon Integration
 
 Agent execution spans beyond the Electron lifecycle via the `POST /daemon/deploy` API bridge. Front-end `☁️ Daemon` actions rip active contexts and stream them directly onto the stable local Node.js daemon (Port 8787) for uninterrupted headless structural processing.
+
+---
+
+## Immune System Architecture (Sequences 4–6)
+
+The following systems extend AEGIS from a passive gatekeeper into an **active immune system**:
+
+```text
+Suspicious Prompt
+  → Discernment Gate ("quarantine" path for moderate risk)
+  → Sandbox Runner (isolated execution, blocklist enforced, timeout)
+  → Crucible Engine (heuristic analysis: exfiltration, port scan, etc.)
+  → [If malicious] Prime synthesizes Vaccine → broadcasts to all Stewards
+  → Mirror Prime UI: QuarantineHUD | CrucibleLogs | VaccineMap | ConnectionPanel
+```
+
+### Sandbox Runner (`src/shared/main/sandbox-runner.ts`)
+
+Executes quarantined commands in an isolated child process with:
+
+- A blocklist of high-risk binaries (`rm -rf`, `dd`, `curl | bash`, etc.)
+- A configurable timeout (default 10s)
+- Full stdout/stderr capture for Crucible analysis
+
+### Crucible Engine (`src/shared/main/crucible.ts`)
+
+Stateless heuristic analyzer that inspects sandbox output for regex-detected attack patterns:
+
+- Data exfiltration (network connection to unusual hosts)
+- Port scanning
+- Blocklist violations
+- Returns `{ isMalicious, reason, detectedPatterns, severity }`
+
+### Vaccine Synthesis (`src/shared/main/steward-prime.ts`)
+
+When a Crucible result confirms malicious intent, Prime:
+
+1. Extracts detected patterns as a Vaccine
+2. Appends them to `activePolicy.blacklistedPatterns`
+3. Broadcasts the updated policy to all registered Stewards via `/policy-update`
+
+### VM Remote Integration
+
+| Env Variable | Purpose | Default |
+|---|---|---|
+| `AEGIS_STEWARD_PORT` | Steward listen port | `8787` |
+| `AEGIS_VM_ADDRESS` | Externally-routable host IP for Prime registration | `localhost` |
+| `AEGIS_AUTH_TOKEN` | Bearer token for `/openclaw/event` remote calls | (none) |
+| `AEGIS_CORS_ORIGIN` | Value for `Access-Control-Allow-Origin` header | `*` |
+| `AEGIS_PRIME_URL` | URL of the Mirror Prime orchestrator | (none) |
+| `AEGIS_AGENT_ID` | Identity of this Steward node | `default-agent` |
+| `AEGIS_SWARM_ID` | Swarm this Steward belongs to | (none) |

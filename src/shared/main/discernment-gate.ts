@@ -38,8 +38,8 @@ import type { IDSResult } from './ids-processor';
 export interface ReturnPacket {
   source: 'IDS'; // I-06
   status: 'discernment_gate_return';
-  path: 'shallow-return' | 'deep-return'; // I-08
-  depth: 'shallow' | 'deep'; // I-08
+  path: 'shallow-return' | 'deep-return' | 'quarantine'; // I-08, S4
+  depth: 'shallow' | 'deep' | 'quarantine'; // I-08, S4
   integrity: 0;
   message: string;
   observed_alignment: Record<string, { score: number; passed_tolerance: boolean; min_unit?: string }>;
@@ -54,18 +54,60 @@ export interface ReturnPacket {
 // Config (append-only – add new constants below if needed)
 const TOLERANCE_BAND = 0.10;  // 10% tolerance for non-force context
 
-export type IDSPath = 'admitted' | 'shallow-return' | 'deep-return';
+export interface GovernancePolicy {
+  version: number;
+  globalThresholdMultiplier: number; // 1.0 = normal, 0.5 = 50% tolerance contraction, 0.0 = zero tolerance
+  blacklistedPatterns: string[];
+}
 
-export function discernmentGate(raw: string, units: Unit[], scores: VirtueScores): {
+export type IDSPath = 'admitted' | 'shallow-return' | 'deep-return' | 'quarantine';
+
+export function discernmentGate(
+  raw: string,
+  units: Unit[],
+  scores: VirtueScores,
+  agentCoherence: number = 0,
+  swarmCoherence: number = 1.0,
+  policy?: GovernancePolicy
+): {
   path: IDSPath,
   integrity: number,
   adjustedScores: VirtueScores,
   fractureVirtues: any[]
 } {
-  // Apply tolerance band
+  // 0. Policy: Blacklist check
+  if (policy && policy.blacklistedPatterns && policy.blacklistedPatterns.length > 0) {
+    let isBlacklisted = false;
+    for (const pattern of policy.blacklistedPatterns) {
+      if (raw.toLowerCase().includes(pattern.toLowerCase())) {
+        isBlacklisted = true;
+        break;
+      }
+    }
+    if (isBlacklisted) {
+      // Force a deep return if blacklisted
+      const deepFracture = [{ virtue: 'Governance', score: 0.0, minUnit: 'Policy Exclusion' }];
+      return { path: 'deep-return', integrity: 0, adjustedScores: scores, fractureVirtues: deepFracture };
+    }
+  }
+
+  // Apply calibrated tolerance band (I-14)
+  // Base tolerance is 10%. High coherence agents get up to +5% buffer.
+  let calibratedTolerance = Math.min(0.20, TOLERANCE_BAND + (agentCoherence * 0.05));
+
+  // I-23: Swarm Auto-Calibration
+  // Contract tolerance based on swarm-wide pressure.
+  const swarmPressureDampening = 0.5 + (0.5 * swarmCoherence);
+  calibratedTolerance *= swarmPressureDampening;
+
+  // Cycle 3: Global Policy Multiplier
+  if (policy) {
+    calibratedTolerance *= policy.globalThresholdMultiplier;
+  }
+
   const adjustedScores: VirtueScores = {} as VirtueScores;
   for (const [virtue, score] of Object.entries(scores)) {
-    adjustedScores[virtue as keyof VirtueScores] = score >= 1 - TOLERANCE_BAND ? 1.0 : score;
+    adjustedScores[virtue as keyof VirtueScores] = score >= 1 - calibratedTolerance ? 1.0 : score;
   }
 
   // Count fractures
@@ -95,15 +137,28 @@ export function discernmentGate(raw: string, units: Unit[], scores: VirtueScores
     });
 
   const n = fractureVirtues.length;
-  const path: IDSPath = n === 0 ? 'admitted' : n === 1 ? 'shallow-return' : 'deep-return';
-  const integrity = n === 0 ? 1 : 0;
+
+  let path: IDSPath = 'admitted';
+  let integrity = 1;
+
+  if (n > 0) {
+    integrity = 0;
+    const lowestScore = Math.min(...fractureVirtues.map(f => f.score));
+
+    // Sequence 4: Quarantine Zone - moderate risk (e.g. 1 fracture, but score is borderline)
+    if (n === 1 && lowestScore >= 0.7) {
+      path = 'quarantine';
+    } else {
+      path = n === 1 ? 'shallow-return' : 'deep-return';
+    }
+  }
 
   return { path, integrity, adjustedScores, fractureVirtues };
 }
 
 export function createReturnPacket(
   raw: string,
-  path: 'shallow-return' | 'deep-return',
+  path: 'shallow-return' | 'deep-return' | 'quarantine',
   adjustedScores: VirtueScores,
   fractureVirtues: any[],
   idsResult: IDSResult
@@ -119,9 +174,9 @@ export function createReturnPacket(
     source: 'IDS',
     status: 'discernment_gate_return',
     path,
-    depth: path === 'shallow-return' ? 'shallow' : 'deep',
+    depth: path === 'shallow-return' ? 'shallow' : path === 'quarantine' ? 'quarantine' : 'deep',
     integrity: 0,
-    message: 'Resonance not fully achieved. Prompt returned for optional realignment.',
+    message: path === 'quarantine' ? 'Moderate risk detected. Action flagged for Quarantine Sandbox.' : 'Resonance not fully achieved. Prompt returned for optional realignment.',
     observed_alignment: Object.fromEntries(
       Object.entries(adjustedScores).map(([v, s]) => [
         v,
