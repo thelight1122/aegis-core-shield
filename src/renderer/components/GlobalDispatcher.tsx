@@ -16,7 +16,14 @@ export default function GlobalDispatcher({ agents, swarms, approvalQueue = [], o
     const [prompt, setPrompt] = React.useState('');
 
     const handleDispatch = () => {
-        if (!target || !prompt) return;
+        if (!target) {
+            alert("Please select a target Agent or Swarm from the dropdown before dispatching.");
+            return;
+        }
+        if (!prompt.trim()) {
+            alert("Please enter a prompt or objective to dispatch.");
+            return;
+        }
         const [type, id] = target.split(':');
         onDispatch(id, type as 'agent' | 'swarm', prompt);
         setPrompt('');
@@ -46,8 +53,8 @@ export default function GlobalDispatcher({ agents, swarms, approvalQueue = [], o
                     placeholder="Enter objective or prompt... All tasks route through the Discernment Gate."
                     rows={4}
                 />
-                <button onClick={handleDispatch} disabled={!target || !prompt}>
-                    Dispatch Mission
+                <button className="btn btn-primary" onClick={handleDispatch}>
+                    Dispatch Mission (Test Gate & Flow)
                 </button>
             </div>
 

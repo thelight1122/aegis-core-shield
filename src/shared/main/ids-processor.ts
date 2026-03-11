@@ -34,7 +34,12 @@ export interface IDSResult {
         };
         virtueTieBack: {
             Honesty: string;
+            Respect: string;
+            Attention: string;
             Affection: string;
+            Loyalty: string;
+            Trust: string;
+            Communication: string;
         };
     };
     integrity: number;
@@ -54,7 +59,7 @@ function calculateIntentSignals(prompt: string, words: string[]) {
 
     // Entity markers: abundance of specific nouns (heuristically identified by capitalization)
     const rawEntities = prompt.split(/\s+/).filter((word, index) =>
-        index > 0 && /^[A-Z][a-z]+/.test(word.replace(/[^a-zA-Z]/g, ''))
+        index > 0 && /^[A-Z]+[a-z]*/.test(word.replace(/[^a-zA-Z]/g, ''))
     ).map(e => e.replace(/[^a-zA-Z]/g, ''));
     const entityDensity = rawEntities.length / (words.length || 1);
 
@@ -144,12 +149,22 @@ export function identify(prompt: string): IDSResult {
         }
     }
 
-    // Virtue Tie-Back (Cycle 3 logic)
+    // Virtue Tie-Back (Cycle 3 logic - Expanded to 7 Virtues)
     const honestyTie = intent.imperativeWeight > 0.3 ? 'potential transparency fracture' : 'aligned';
-    const affectionTie = lower.includes('just') || lower.includes('whatever') ? 'potential tone fracture' : 'aligned';
+    const respectTie = (intent.imperative && intent.forceWord) ? 'potential boundary tension' : 'aligned';
+    const attentionTie = words.length < 3 ? 'low detail density' : 'aligned';
+    const affectionTie = lower.includes('just') || lower.includes('whatever') || lower.includes('shut up') ? 'potential tone fracture' : 'aligned';
+    const loyaltyTie = lower.includes('ignore') || lower.includes('forget') ? 'potential commitment drift' : 'aligned';
+    const trustTie = lower.includes('must') || lower.includes('no choice') ? 'high pressure signal' : 'aligned';
+    const communicationTie = intent.negation && intent.imperative ? 'obstructive structure' : 'aligned';
 
     observations.push(`Virtue Tie-Back: Honesty is ${honestyTie}`);
+    observations.push(`Virtue Tie-Back: Respect is ${respectTie}`);
+    observations.push(`Virtue Tie-Back: Attention is ${attentionTie}`);
     observations.push(`Virtue Tie-Back: Affection is ${affectionTie}`);
+    observations.push(`Virtue Tie-Back: Loyalty is ${loyaltyTie}`);
+    observations.push(`Virtue Tie-Back: Trust is ${trustTie}`);
+    observations.push(`Virtue Tie-Back: Communication is ${communicationTie}`);
     observations.push(`Prompt length: ${words.length} words (filtered)`);
 
     return {
@@ -168,7 +183,12 @@ export function identify(prompt: string): IDSResult {
             },
             virtueTieBack: {
                 Honesty: honestyTie,
-                Affection: affectionTie
+                Respect: respectTie,
+                Attention: attentionTie,
+                Affection: affectionTie,
+                Loyalty: loyaltyTie,
+                Trust: trustTie,
+                Communication: communicationTie
             }
         },
         integrity: 1,
@@ -231,7 +251,7 @@ export function define(identifyResult: IDSResult): IDSResult {
  * Phase 3: Suggest
  * Offers optional pathways based on observations (no enforcement)
  */
-export function suggest(defineResult: IDSResult, path: IDSPath, agent?: any): IDSResult {
+export function suggest(defineResult: IDSResult, path: IDSPath, scores?: Record<string, number>, agent?: any): IDSResult {
     const observations: string[] = [...defineResult.observations];
     const suggestions: string[] = [];
     const intent = defineResult.analysis?.intent;
@@ -280,15 +300,18 @@ export function suggest(defineResult: IDSResult, path: IDSPath, agent?: any): ID
         }
         suggestions.push('Direct processing pathway engaged');
     } else {
-        // Enhanced fracture observations for return paths (I-09)
+        // Enhanced fracture observations for return paths (I-09) - Expanded to 7 Virtues
         const analysis = defineResult.analysis;
         if (analysis) {
-            if (analysis.virtueTieBack.Honesty !== 'aligned') {
-                suggestions.push(`Mirror: Structural integrity check for Honesty (${analysis.virtueTieBack.Honesty})`);
-            }
-            if (analysis.virtueTieBack.Affection !== 'aligned') {
-                suggestions.push(`Mirror: Structural integrity check for Affection (${analysis.virtueTieBack.Affection})`);
-            }
+            const virtues = ['Honesty', 'Respect', 'Attention', 'Affection', 'Loyalty', 'Trust', 'Communication'];
+            virtues.forEach(v => {
+                const tieBack = (analysis.virtueTieBack as any)[v];
+                // Suggest Mirroring if a fracture was observed in Tie-Back OR score is sub-1.0
+                const score = scores ? scores[v] : 1.0;
+                if (tieBack !== 'aligned' || (score !== undefined && score < 1.0)) {
+                    suggestions.push(`Mirror: Structural integrity check for ${v} (${tieBack}${score < 1.0 ? `, score: ${score.toFixed(2)}` : ''})`);
+                }
+            });
         }
 
         if (defineResult.observations.some(obs => obs.includes('Self-referential directive'))) {
@@ -314,10 +337,10 @@ export function suggest(defineResult: IDSResult, path: IDSPath, agent?: any): ID
 /**
  * Run complete IDS pipeline
  */
-export function runIDS(prompt: string, path: IDSPath, agent?: any): IDSResult {
+export function runIDS(prompt: string, path: IDSPath, scores?: Record<string, number>, agent?: any): IDSResult {
     const identified = identify(prompt);
     const defined = define(identified);
-    const suggested = suggest(defined, path, agent);
+    const suggested = suggest(defined, path, scores, agent);
     return suggested;
 }
 
@@ -384,7 +407,7 @@ export async function processPrompt(rawPrompt: string, agentId: string = 'defaul
     const { path, integrity, adjustedScores, fractureVirtues } = discernmentGate(rawPrompt, units, rawScores, localCoherence, swarmCoherence, activeGovernancePolicy);
 
     // 4. Universal IDS Flow (I-05 / I-13 mirroring)
-    const idsResult = runIDS(rawPrompt, path, agent);
+    const idsResult = runIDS(rawPrompt, path, adjustedScores as Record<string, number>, agent);
 
     // Update Agent State (I-11/I-12)
     const timestamp = new Date().toISOString();

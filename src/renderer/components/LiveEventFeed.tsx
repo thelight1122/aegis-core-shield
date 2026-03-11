@@ -14,7 +14,7 @@ export default function LiveEventFeed() {
     const listRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const STEWARD_URL = process.env.AEGIS_STEWARD_URL || 'http://localhost:8787';
+        const STEWARD_URL = 'http://localhost:8787'; // Default Steward URL
         const es = new EventSource(`${STEWARD_URL}/events`);
         esRef.current = es;
 

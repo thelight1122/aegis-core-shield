@@ -928,6 +928,32 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    z-index: 2;
+}
+
+.mesh-layout .peer-node::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 1px;
+    background: rgba(88, 166, 255, 0.1);
+    z-index: -1;
+    transform-origin: left;
+}
+
+.consensus-overlay {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.badge-consensus {
+    background: rgba(210, 168, 255, 0.1);
+    color: #d2a8ff;
+    border: 1px solid rgba(210, 168, 255, 0.4);
+    font-size: 10px;
 }
 
 .badge-outline {

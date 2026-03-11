@@ -132,7 +132,7 @@ export default function MirrorPrimeDashboard() {
             {/* 6. Action HUD */}
             <div className="prime-actions">
                 <button onClick={async () => {
-                    const res = await fetch(`${process.env.AEGIS_PRIME_URL || 'http://localhost:8888'}/reflect`, { method: 'POST' });
+                    const res = await fetch('http://localhost:8888/reflect', { method: 'POST' });
                     const data = await res.json();
                     alert(`Swarm reflection triggered. Results: ${JSON.stringify(data.results)}`);
                 }}>

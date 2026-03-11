@@ -40,7 +40,7 @@ export interface AegisAgent {
 }
 
 export interface SwarmTopology {
-    type: 'round-robin' | 'hierarchical';
+    type: 'round-robin' | 'hierarchical' | 'consensus';
     leadAgentId?: string; // Used if hierarchical
     memberIds: string[];
 }

@@ -72,14 +72,21 @@ export default function SwarmManager({ agents, swarms, onAddSwarm }: SwarmManage
                                 </div>
                             ) : (
                                 <div className="topology-tree round-robin">
-                                    <div className="circular-layout">
+                                    <div className="circular-layout mesh-layout">
                                         {s.topology.memberIds.map(memberId => (
                                             <div key={memberId} className="peer-node">
-                                                <div className="node-avatar peer-avatar">P</div>
+                                                <div className="node-avatar peer-avatar">
+                                                    {s.topology.type === 'consensus' ? 'V' : 'P'}
+                                                </div>
                                                 <span className="node-name">{agents.find(a => a.id === memberId)?.name || memberId}</span>
                                             </div>
                                         ))}
                                     </div>
+                                    {s.topology.type === 'consensus' && (
+                                        <div className="consensus-overlay">
+                                            <span className="badge badge-consensus">Majority Required: {Math.floor((s.topology.memberIds.length + 1) / 2) + 1}</span>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -93,6 +100,7 @@ export default function SwarmManager({ agents, swarms, onAddSwarm }: SwarmManage
                 <select title="Swarm Topology" value={topology} onChange={e => setTopology(e.target.value as any)}>
                     <option value="round-robin">Round Robin</option>
                     <option value="hierarchical">Hierarchical</option>
+                    <option value="consensus">Decentralized Consensus</option>
                 </select>
 
                 {topology === 'hierarchical' && (

@@ -5,11 +5,12 @@
     "main": "dist/main/main.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" \"run-s wait-dev dev:electron\"",
+        "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" \"npm run prime\" \"run-s wait-dev dev:electron\"",
         "wait-dev": "wait-on http://localhost:3000",
         "dev:electron": "cross-env NODE_ENV=development electron .",
         "dev:renderer": "vite",
         "dev:main": "tsc -w -p tsconfig.json",
+        "prime": "ts-node src/cli/mirror-prime.ts",
         "gui": "run-s build open:electron",
         "open:electron": "electron .",
         "build": "run-s build:main build:renderer",

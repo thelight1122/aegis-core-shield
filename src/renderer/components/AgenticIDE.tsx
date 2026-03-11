@@ -472,13 +472,19 @@ export default function AgenticIDE() {
                 <div className="ide-sidebar">
                     <MetricsPanel />
                     <TracerMap agents={agents} swarms={swarms} />
-                    <AgentRegistry agents={agents} onAddAgent={handleAddAgent} />
-                    <ToolManager agents={agents} onUpdateAgentTools={handleUpdateAgentTools} />
+                    <div data-tutorial="agent-registry">
+                        <AgentRegistry agents={agents} onAddAgent={handleAddAgent} />
+                    </div>
+                    <div data-tutorial="tool-manager">
+                        <ToolManager agents={agents} onUpdateAgentTools={handleUpdateAgentTools} />
+                    </div>
                     <SwarmManager agents={agents} swarms={swarms} onAddSwarm={handleAddSwarm} />
                 </div>
 
                 <div className="ide-main-view">
-                    <TargetWorkspaceSelector workspacePath={workspacePath} onChangeWorkspace={setWorkspacePath} />
+                    <div data-tutorial="workspace-selector">
+                        <TargetWorkspaceSelector workspacePath={workspacePath} onChangeWorkspace={setWorkspacePath} />
+                    </div>
 
                     {workspacePath && backups.length > 0 && (
                         <div className="registry-panel file-rollbacks-panel mb-3">
@@ -501,13 +507,15 @@ export default function AgenticIDE() {
                         </div>
                     )}
 
-                    <GlobalDispatcher
-                        agents={agents}
-                        swarms={swarms}
-                        onDispatch={handleDispatch}
-                        approvalQueue={approvalQueue}
-                        onResolveAction={handleApprovalResolve}
-                    />
+                    <div data-tutorial="global-dispatcher">
+                        <GlobalDispatcher
+                            agents={agents}
+                            swarms={swarms}
+                            onDispatch={handleDispatch}
+                            approvalQueue={approvalQueue}
+                            onResolveAction={handleApprovalResolve}
+                        />
+                    </div>
 
                     {activeEditorFile && (
                         <div className="monaco-pane mb-4 p-3">

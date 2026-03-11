@@ -3,11 +3,18 @@ import { identify, define, suggest } from './ids-processor';
 describe('IDS Processor – Unit Tests (I-09)', () => {
 
     test('Identify phase: observes interrogative structure and active intent', () => {
-        const prompt = "What is Aegis?";
+        const prompt = "What is the AEGIS Core Shield?";
         const result = identify(prompt);
         expect(result.observations).toContain('Prompt contains interrogative structure');
         expect(result.observations).toContain('Intent Profile: active');
-        expect(result.observations).toContain('Potential entities observed: Aegis');
+        expect(result.observations).toContain('Potential entities observed: AEGIS, Core, Shield');
+        expect(result.observations).toContain('Virtue Tie-Back: Honesty is aligned');
+        expect(result.observations).toContain('Virtue Tie-Back: Respect is aligned');
+        expect(result.observations).toContain('Virtue Tie-Back: Attention is aligned');
+        expect(result.observations).toContain('Virtue Tie-Back: Affection is aligned');
+        expect(result.observations).toContain('Virtue Tie-Back: Loyalty is aligned');
+        expect(result.observations).toContain('Virtue Tie-Back: Trust is aligned');
+        expect(result.observations).toContain('Virtue Tie-Back: Communication is aligned');
     });
 
     test('Identify phase: detects descriptive profile', () => {

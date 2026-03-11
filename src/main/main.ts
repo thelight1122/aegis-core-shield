@@ -42,7 +42,37 @@ function createWindow() {
     win.webContents.openDevTools();
 }
 
-app.whenReady().then(createWindow);
+// Single Instance Lock (Fixes "Access is denied" cache error)
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // Someone tried to run a second instance, we should focus our window.
+        const windows = BrowserWindow.getAllWindows();
+        if (windows.length > 0) {
+            if (windows[0].isMinimized()) windows[0].restore();
+            windows[0].focus();
+        }
+    });
+
+    app.whenReady().then(() => {
+        // Set Content Security Policy (resolves Electron security warning)
+        const { session } = require('electron');
+        session.defaultSession.webRequest.onHeadersReceived((details: any, callback: any) => {
+            callback({
+                responseHeaders: {
+                    ...details.responseHeaders,
+                    'Content-Security-Policy': ["default-src 'self' 'unsafe-inline' http://localhost:3000 http://localhost:8888; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"]
+                }
+            });
+        });
+        createWindow();
+    });
+}
+
+// app.whenReady is handled above within the single-instance lock logic
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

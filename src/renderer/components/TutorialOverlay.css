@@ -1,0 +1,119 @@
+.tutorial-overlay-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    pointer-events: none; /* Let clicks pass through to the spotlight area */
+}
+
+/* 
+  We use a box-shadow approach to create the dark backdrop 
+  while leaving a transparent "hole" (spotlight) over the target element. 
+*/
+.tutorial-spotlight {
+    position: fixed;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    border: 2px solid #58a6ff;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 9998;
+    pointer-events: none; /* Let clicks hit the actual button underneath */
+    
+    /* Subtle pulse animation for the border */
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 0 0 rgba(88, 166, 255, 0.4); }
+    70% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 0 10px rgba(88, 166, 255, 0); }
+    100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 0 0 rgba(88, 166, 255, 0); }
+}
+
+.tutorial-tooltip {
+    position: fixed;
+    background: rgba(22, 27, 34, 0.95);
+    border: 1px solid rgba(88, 166, 255, 0.5);
+    border-radius: 12px;
+    padding: 16px 20px;
+    width: 320px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    color: #e6edf3;
+    font-family: inherit;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    pointer-events: auto; /* Buttons inside tooltip must be clickable */
+}
+
+.tutorial-tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 8px;
+}
+
+.tutorial-tooltip-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #58a6ff;
+    margin: 0;
+}
+
+.tutorial-tooltip-step {
+    font-size: 12px;
+    color: #8b949e;
+    background: #21262d;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.tutorial-tooltip-content {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    color: #c9d1d9;
+}
+
+.tutorial-tooltip-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-tutorial {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-tutorial-skip {
+    background: transparent;
+    color: #8b949e;
+    border-color: transparent;
+}
+
+.btn-tutorial-skip:hover {
+    color: #c9d1d9;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-tutorial-next {
+    background: #238636;
+    color: #ffffff;
+    border-color: rgba(240, 246, 252, 0.1);
+}
+
+.btn-tutorial-next:hover {
+    background: #2ea043;
+    border-color: rgba(240, 246, 252, 0.1);
+}
