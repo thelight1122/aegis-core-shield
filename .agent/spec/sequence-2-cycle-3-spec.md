@@ -1,10 +1,12 @@
 # Change Specification: Sequence 2, Cycle 3 - Broadcast Policies
 
-## Problem Statement
+---
+
+## 1. Problem Statement
 
 Currently, governance rules (thresholds, virtue weights) are hardcoded or local to each Steward. To scale AEGIS, we need a way to broadcast "Global Governance Policies" from the Controller to all registered stewards.
 
-## Proposed Policy Structure
+## 2. Proposed Policy Structure
 
 A `GovernancePolicy` will be a global set of rules applied at the `ids-processor` level:
 
@@ -12,7 +14,7 @@ A `GovernancePolicy` will be a global set of rules applied at the `ids-processor
 - `blacklistedPatterns`: Array of strings or regex to always block.
 - `virtueWeightOverrides`: Map of virtue name to multiplier.
 
-## Propagation Strategy: Polling (Pull)
+## 3. Propagation Strategy: Polling (Pull)
 
 For simplicity and reliability in distributed networks, we will use a **Pull** model:
 
@@ -20,25 +22,25 @@ For simplicity and reliability in distributed networks, we will use a **Pull** m
 2. **Steward**: Every 60s, calls `GET /policy` on the Controller.
 3. **IDS Processor**: Applies the loaded policy during `processPrompt`.
 
-## Proposed Changes
+## 4. Proposed Changes
 
 ### [Steward Controller]
 
-- **[MODIFY] [steward-controller.ts]**:
+- **[MODIFY] [steward-controller.ts](file:///c:/Users/theli/OneDrive/Documents/GitHub/aegis-core-shield/src/shared/main/steward-controller.ts)**:
   - Add `policy` and `policyVersion` state.
   - Add `POST /broadcast` to update policy.
   - Add `GET /policy` for stewards to download.
 
 ### [Steward IDS]
 
-- **[MODIFY] [discernment-gate.ts]**:
+- **[MODIFY] [discernment-gate.ts](file:///c:/Users/theli/OneDrive/Documents/GitHub/aegis-core-shield/src/shared/main/discernment-gate.ts)**:
   - Update `discernmentGate` to accept optional `GovernancePolicy`.
   - Apply `globalThresholdMultiplier`.
-- **[MODIFY] [ids-processor.ts]**:
+- **[MODIFY] [ids-processor.ts](file:///c:/Users/theli/OneDrive/Documents/GitHub/aegis-core-shield/src/shared/main/ids-processor.ts)**:
   - Cache the latest policy from the controller.
   - Pass it to the gate.
 
-## Verification Plan
+## 5. Verification Plan
 
 1. **Policy Broadcast Test**: Verify the Controller accepts a new policy and version.
 2. **Steward Pull Test**: Verify the Steward fetches and applies the policy.

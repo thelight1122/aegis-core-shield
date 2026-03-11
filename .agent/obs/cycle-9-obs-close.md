@@ -1,5 +1,7 @@
 # Cycle 9 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -24,4 +26,5 @@
 Cycle 9 has unified the AEGIS swarm. Intelligence is no longer an individual pursuit but a collective evolution. Agents now benefit from the distilled wisdom of their peers, accelerating group-wide alignment.
 
 **Cycle 9 Status: CLOSED**
-═══════════════════════════════════════════════════════════
+
+---

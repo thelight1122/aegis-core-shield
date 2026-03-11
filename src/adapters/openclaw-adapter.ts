@@ -1,9 +1,17 @@
 import { createHash } from 'crypto';
 
-import { discernmentGate, GateResult } from '../shared/main/discernment-gate';
+import { discernmentGate, GateResult, VirtueScores, createReturnPacket } from '../shared/main/discernment-gate';
 
 import { DataQuadSnapshot } from './dataquad-schema';
 import { IDSResult, runIDS } from '../shared/main/ids-processor';
+import { tokenizeAndChunk } from '../shared/main/tokenization';
+import { scoreHonesty } from '../shared/main/virtue-scoring-honesty';
+import { scoreRespect } from '../shared/main/virtue-scoring-respect';
+import { scoreAttention } from '../shared/main/virtue-scoring-attention';
+import { scoreAffection } from '../shared/main/virtue-scoring-affection';
+import { scoreLoyalty } from '../shared/main/virtue-scoring-loyalty';
+import { scoreTrust } from '../shared/main/virtue-scoring-trust';
+import { scoreCommunication } from '../shared/main/virtue-scoring-communication';
 
 export interface OpenClawEvent {
   agentId: string;
@@ -82,8 +90,26 @@ export const processOpenClawEvent = (
   event: OpenClawEvent,
   options: OpenClawAdapterOptions = {}
 ): OpenClawLogEntry => {
-  const gateResult = discernmentGate(event.prompt);
-  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+  const units = tokenizeAndChunk(event.prompt);
+  const rawScores: VirtueScores = {
+    Honesty: Math.min(...units.map(u => scoreHonesty(u))),
+    Respect: Math.min(...units.map(u => scoreRespect(u))),
+    Attention: Math.min(...units.map(u => scoreAttention(u))),
+    Affection: Math.min(...units.map(u => scoreAffection(u))),
+    Loyalty: Math.min(...units.map(u => scoreLoyalty(u))),
+    Trust: Math.min(...units.map(u => scoreTrust(u))),
+    Communication: Math.min(...units.map(u => scoreCommunication(u))),
+  };
+
+  const gate = discernmentGate(event.prompt, units, rawScores);
+  const admitted = gate.path === 'admitted';
+  
+  const idsResult = runIDS(event.prompt, gate.path, gate.adjustedScores);
+
+  const gateResult: GateResult = {
+    admitted,
+    payload: admitted ? event.prompt : createReturnPacket(event.prompt, gate.path as any, gate.adjustedScores, gate.fractureVirtues, idsResult)
+  };
 
   return buildOpenClawLogEntry(event, gateResult, idsResult, options);
 };

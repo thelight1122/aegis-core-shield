@@ -1,5 +1,7 @@
-BM-DEV HANDOFF PACKET
-═══════════════════════════════════════════════════════════
+# BM-DEV Handoff Packet
+
+---
+
 ISSUES_IMPLEMENTED:   I-04, I-05, I-06, I-08 (Architectural Stability Restoration)
 ISSUES_SKIPPED:       I-01, I-02, I-03, I-07 (Confirmed RESOLVED in DIAG, no changes needed)
 FILES_MODIFIED:       src/adapters/openclaw-adapter.ts
@@ -13,4 +15,5 @@ TESTS_WRITTEN:        34 tests passed (restored legacy suite + Cycle 1 regressio
 DEVIATIONS_FROM_SPEC: NONE - Refined adapters to maintain the RESOLVED state of core architecture.
 FLAGS_FOR_NEXT_DIAG:  NONE
 READY_FOR_QA:         YES
-═══════════════════════════════════════════════════════════
+
+---

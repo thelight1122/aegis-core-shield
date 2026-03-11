@@ -3,7 +3,9 @@
 // Three-phase processing: observation → definition → suggestion
 // Observation-only language, no judgments, preserves user agency
 
-import { discernmentGate, ReturnPacket, VirtueScores, createReturnPacket, IDSPath } from './discernment-gate';
+import { discernmentGate, createReturnPacket } from './discernment-gate';
+import { ReturnPacket, VirtueScores, IDSPath, IDSResult } from '../types';
+export type { ReturnPacket, VirtueScores, IDSPath, IDSResult };
 import { Unit, tokenizeAndChunk } from './tokenization';
 import { scoreHonesty } from './virtue-scoring-honesty';
 import { scoreRespect } from './virtue-scoring-respect';
@@ -18,33 +20,6 @@ import { saveAgentToDb, loadAgentFromDb, loadSwarmMemories, loadSwarmLearnings, 
 import * as crypto from 'crypto';
 import { activeGovernancePolicy } from './governance-state';
 
-export interface IDSResult {
-    phase: 'identify' | 'define' | 'suggest';
-    input: string;
-    output: string;
-    observations: string[];
-    analysis?: {
-        entities: string[];
-        intent: {
-            imperative: boolean;
-            question: boolean;
-            negation: boolean;
-            forceWord: boolean;
-            descriptive: boolean;
-        };
-        virtueTieBack: {
-            Honesty: string;
-            Respect: string;
-            Attention: string;
-            Affection: string;
-            Loyalty: string;
-            Trust: string;
-            Communication: string;
-        };
-    };
-    integrity: number;
-    timestamp: string;
-}
 
 /**
  * Helper: Calculate granular intent signals from prompt units
@@ -205,7 +180,7 @@ export function define(identifyResult: IDSResult): IDSResult {
     const input = identifyResult.input.toLowerCase();
 
     // Analyze prompt structure
-    const sentences = identifyResult.input.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentences = identifyResult.input.split(/[.!?]+/).filter((s: string) => s.trim().length > 0);
     observations.push(`Structural composition: ${sentences.length} sentence(s)`);
 
     // Detect action verbs (Cycle 3 enhanced heuristic)
@@ -215,7 +190,7 @@ export function define(identifyResult: IDSResult): IDSResult {
     // NEW: Self-Referential vs External Directive detection (I-09)
     const selfReferentialMarkers = ['you must', 'you should', 'i need you', 'do this', 'fix this'];
     const isSelfReferential = selfReferentialMarkers.some(marker => input.includes(marker));
-    const hasExternalTarget = observations.some(obs => obs.includes('Potential entities observed'));
+    const hasExternalTarget = observations.some((obs: string) => obs.includes('Potential entities observed'));
 
     if (foundActions.length > 0) {
         observations.push(`Action indicators: ${foundActions.join(', ')}`);
@@ -292,7 +267,7 @@ export function suggest(defineResult: IDSResult, path: IDSPath, scores?: Record<
         if (intent?.question) {
             suggestions.push('Pathway: Information retrieval sequence available');
         }
-        if (defineResult.observations.some(obs => obs.includes('Action indicators'))) {
+        if (defineResult.observations.some((obs: string) => obs.includes('Action indicators'))) {
             suggestions.push('Pathway: Task execution sequence available');
         }
         if (intent?.descriptive) {
@@ -314,7 +289,7 @@ export function suggest(defineResult: IDSResult, path: IDSPath, scores?: Record<
             });
         }
 
-        if (defineResult.observations.some(obs => obs.includes('Self-referential directive'))) {
+        if (defineResult.observations.some((obs: string) => obs.includes('Self-referential directive'))) {
             suggestions.push('Mirror: Reflection engine available for high-force signals');
         }
 

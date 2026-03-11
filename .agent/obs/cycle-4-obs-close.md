@@ -1,5 +1,7 @@
 # Cycle 4 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -24,4 +26,5 @@
 Cycle 4 has successfully established the persistence layer and topological indexing required for temporal continuity. The system is now stateful and topologically aware while remaining resilient to environment-specific native binding issues.
 
 **Cycle 4 Status: CLOSED**
-═══════════════════════════════════════════════════════════
+
+---

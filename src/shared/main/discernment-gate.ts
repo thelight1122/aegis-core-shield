@@ -16,51 +16,22 @@ import { initGateLogger, logGateEvaluation, GateLogEntry } from './gate-logger';
 import { processIDR, processIDQRA } from './reflection-engine';
 import * as crypto from 'crypto';
 
-export interface VirtueScores {
-  Honesty: number;
-  Respect: number;
-  Attention: number;
-  Affection: number;
-  Loyalty: number;
-  Trust: number;
-  Communication: number;
-  [key: string]: number;  // Allow indexing by string for logger compatibility
+interface Fracture {
+  virtue: string;
+  score: number;
+  minUnit: string;
 }
+
+import { ReflectionSequence, IDSResult, VirtueScores, ReturnPacket, GovernancePolicy, IDSPath } from '../types';
+export type { ReflectionSequence, IDSResult, VirtueScores, ReturnPacket, GovernancePolicy, IDSPath };
+
+// Config (append-only – add new constants below if needed)
+const TOLERANCE_BAND = 0.10;  // 10% tolerance for non-force context
 
 export interface GateResult {
   admitted: boolean;
   payload: string | ReturnPacket;
 }
-
-import { ReflectionSequence } from './reflection-engine';
-import type { IDSResult } from './ids-processor';
-
-export interface ReturnPacket {
-  source: 'IDS'; // I-06
-  status: 'discernment_gate_return';
-  path: 'shallow-return' | 'deep-return' | 'quarantine'; // I-08, S4
-  depth: 'shallow' | 'deep' | 'quarantine'; // I-08, S4
-  integrity: 0;
-  message: string;
-  observed_alignment: Record<string, { score: number; passed_tolerance: boolean; min_unit?: string }>;
-  fracture_locations: Array<{ unit: string; virtues_affected: string[]; observation: string }>;
-  realignment_observations: string[];
-  original_prompt: string;
-  action_taken: 'none – prompt not processed further';
-  reflection_sequence?: ReflectionSequence;
-  ids_observations: IDSResult; // I-06
-}
-
-// Config (append-only – add new constants below if needed)
-const TOLERANCE_BAND = 0.10;  // 10% tolerance for non-force context
-
-export interface GovernancePolicy {
-  version: number;
-  globalThresholdMultiplier: number; // 1.0 = normal, 0.5 = 50% tolerance contraction, 0.0 = zero tolerance
-  blacklistedPatterns: string[];
-}
-
-export type IDSPath = 'admitted' | 'shallow-return' | 'deep-return' | 'quarantine';
 
 export function discernmentGate(
   raw: string,
@@ -107,7 +78,7 @@ export function discernmentGate(
 
   const adjustedScores: VirtueScores = {} as VirtueScores;
   for (const [virtue, score] of Object.entries(scores)) {
-    adjustedScores[virtue as keyof VirtueScores] = score >= 1 - calibratedTolerance ? 1.0 : score;
+    adjustedScores[virtue as keyof VirtueScores] = (score as number) >= 1 - calibratedTolerance ? 1.0 : (score as number);
   }
 
   // Count fractures
@@ -143,7 +114,7 @@ export function discernmentGate(
 
   if (n > 0) {
     integrity = 0;
-    const lowestScore = Math.min(...fractureVirtues.map(f => f.score));
+    const lowestScore = Math.min(...fractureVirtues.map(f => f.score as number));
 
     // Sequence 4: Quarantine Zone - moderate risk (e.g. 1 fracture, but score is borderline)
     if (n === 1 && lowestScore >= 0.7) {
@@ -160,7 +131,7 @@ export function createReturnPacket(
   raw: string,
   path: 'shallow-return' | 'deep-return' | 'quarantine',
   adjustedScores: VirtueScores,
-  fractureVirtues: any[],
+  fractureVirtues: Fracture[],
   idsResult: IDSResult
 ): ReturnPacket {
   const lowestScore = Math.min(...fractureVirtues.map(f => f.score));
@@ -180,7 +151,11 @@ export function createReturnPacket(
     observed_alignment: Object.fromEntries(
       Object.entries(adjustedScores).map(([v, s]) => [
         v,
-        { score: s, passed_tolerance: s >= 1 - TOLERANCE_BAND, min_unit: s < 1 ? fractureVirtues.find(f => f.virtue === v)?.minUnit : undefined }
+        { 
+          score: s as number, 
+          passed_tolerance: (s as number) >= (1 - TOLERANCE_BAND), 
+          min_unit: (s as number) < 1 ? (fractureVirtues as Fracture[]).find(f => f.virtue === v)?.minUnit : undefined 
+        }
       ])
     ),
     fracture_locations: fractureVirtues.map(f => ({

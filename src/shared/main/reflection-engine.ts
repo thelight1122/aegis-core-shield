@@ -4,16 +4,8 @@
  * Implements the IDR and IDQRA reflection sequences for non-coercive coherence recovery.
  */
 
-export interface ReflectionStage {
-    stage: 'Identify' | 'Define' | 'Question' | 'Reflect' | 'Acknowledge';
-    content: string;
-}
-
-export interface ReflectionSequence {
-    type: 'IDR' | 'IDQRA';
-    stages: ReflectionStage[];
-    timestamp: string;
-}
+import { ReflectionStage, ReflectionSequence } from '../types';
+export type { ReflectionStage, ReflectionSequence };
 
 /**
  * IDR - The Sequence of Illumination

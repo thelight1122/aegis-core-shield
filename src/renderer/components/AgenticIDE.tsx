@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import type { IDSResult } from '../../shared/main/ids-processor';
-import type { ReturnPacket } from '../../shared/main/discernment-gate';
+import type { IDSResult, ReturnPacket } from '../../shared/types';
 import { AegisAgent, AegisSwarm, createDefaultQuad, PendingAction } from '../types/ide';
 
 import TargetWorkspaceSelector from './TargetWorkspaceSelector';
@@ -132,7 +131,8 @@ export default function AgenticIDE() {
         if (window.aegisAPI) {
             res = await window.aegisAPI.processPrompt(prompt);
         } else {
-            console.error('AEGIS API not available for dispatch');
+            console.error('AEGIS API not available. Cannot process prompt.');
+            setResult({ error: 'AEGIS API not available' });
             return;
         }
 

@@ -1,5 +1,7 @@
 # Cycle 7 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -24,4 +26,5 @@
 Cycle 7 has introduced architectural discipline to the AEGIS memory layer. The system now possesses a functional "Forgetfulness Window" that converts raw temporal data into consolidated structural insights.
 
 **Cycle 7 Status: CLOSED**
-═══════════════════════════════════════════════════════════
+
+---

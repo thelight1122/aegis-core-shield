@@ -1,5 +1,7 @@
-BM-ARCH ASSESSMENT
-═══════════════════════════════════════════════════════════
+# BM-ARCH Assessment
+
+---
+
 PIPELINE_COHERENCE:       ALIGNED
 PIPELINE_TRACE:
 
@@ -34,4 +36,5 @@ FLAGS_FOR_BM_OBS:         The transition to async processPrompt is a significant
 
 OVERALL_STATUS:           PASS
 BLOCKING_ISSUES:          NONE
-═══════════════════════════════════════════════════════════
+
+---

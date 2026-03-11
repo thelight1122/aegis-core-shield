@@ -1,5 +1,7 @@
 # Cycle 5 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -24,4 +26,5 @@
 Cycle 5 has successfully transited AEGIS from passive memory to active reflection. The system now "recognizes" its own previous structural patterns and rewards historical integrity with calibrated resonance.
 
 **Cycle 5 Status: CLOSED**
-═══════════════════════════════════════════════════════════
+
+---

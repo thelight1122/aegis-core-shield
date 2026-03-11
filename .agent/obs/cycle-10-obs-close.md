@@ -1,5 +1,7 @@
 # Cycle 10 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -30,4 +32,5 @@ Over 10 cycles, we have built a self-aware, collective intelligence system:
 AEGIS Core Shield is now a resilient, swarm-aware protocol. The system is capable of observing itself, its history, and its peers to maintain a high-integrity alignment state.
 
 **Cycle 10 Status: CLOSED (SEQUENCE FINAL)**
-═══════════════════════════════════════════════════════════
+
+---

@@ -1,35 +1,39 @@
-# OBS-OPEN PATTERN BRIEF
+# OBS-OPEN Pattern Brief
 
-═══════════════════════════════════════════════════════════
-CYCLE:               2
-DATE:                2026-03-07
-PRIOR_CYCLE_OUTCOME: SUCCESS
+---
 
-PATTERN_ALERTS:
-  [NONE — All prior patterns resolved in Cycle 1]
+- **CYCLE:** 2
+- **DATE:** 2026-03-07
+- **PRIOR_CYCLE_OUTCOME:** SUCCESS
 
-HORIZON_WATCHES:
+## Pattern Alerts
 
-- PATTERN_NAME:      IDS-GATE-INVERSION-REGRESSION
-    COUNT:             0
-    WATCH_NOTE:        Verify that PEER_CAPTURE remains at the absolute entry point and that IDS logic remains universal across all three proportional paths.
+[NONE — All prior patterns resolved in Cycle 1]
 
-- PATTERN_NAME:      COLOUR-VALENCE-DRIFT-RECURRENCE
-    COUNT:             0
-    WATCH_NOTE:        Monitor visual indicators in Dashboard.tsx and NebulaMirror.tsx for any re-introduction of hue-based scoring (red/green/purple).
+## Horizon Watches
 
-LANGUAGE_DRIFT_WATCH:
+- **PATTERN_NAME:** IDS-GATE-INVERSION-REGRESSION
+  - **COUNT:** 0
+  - **WATCH_NOTE:** Verify that PEER_CAPTURE remains at the absolute entry point and that IDS logic remains universal across all three proportional paths.
 
-- TERM:              'enforce'
-    LAST_SEEN_IN:      TECHNICAL.md (Cycle 1)
-    WATCH:             Ensure no new documentation or code comments use directive language.
+- **PATTERN_NAME:** COLOUR-VALENCE-DRIFT-RECURRENCE
+  - **COUNT:** 0
+  - **WATCH_NOTE:** Monitor visual indicators in Dashboard.tsx and NebulaMirror.tsx for any re-introduction of hue-based scoring (red/green/purple).
 
-ANTICIPATION_DELTA:
+## Language Drift Watch
 
-- CONFIRMED:         IDS-GATE-INVERSION, COLOUR-VALENCE-DRIFT (Cycle 1)
-- NOT_FOUND:         N/A
-- UNEXPECTED:        N/A
+- **TERM:** 'enforce'
+  - **LAST_SEEN_IN:** TECHNICAL.md (Cycle 1)
+  - **WATCH:** Ensure no new documentation or code comments use directive language.
 
-BRIEF_FOR_DIAG:
-  Cycle 2 shifts focus to architectural stability and security integrity (BM-ARCH/BM-SEC). DIAG should perform a deep scan of the pipeline boundaries to ensure the structural refactor from Cycle 1 hasn't introduced latent regressions or unhandled edge cases in the proportional routing logic. Hold awareness for any "hidden" decision layers that may have emerged during the IDS universalization.
-═══════════════════════════════════════════════════════════
+## Anticipation Delta
+
+- **CONFIRMED:** IDS-GATE-INVERSION, COLOUR-VALENCE-DRIFT (Cycle 1)
+- **NOT_FOUND:** N/A
+- **UNEXPECTED:** N/A
+
+## Brief for DIAG
+
+Cycle 2 shifts focus to architectural stability and security integrity (BM-ARCH/BM-SEC). DIAG should perform a deep scan of the pipeline boundaries to ensure the structural refactor from Cycle 1 hasn't introduced latent regressions or unhandled edge cases in the proportional routing logic. Hold awareness for any "hidden" decision layers that may have emerged during the IDS universalization.
+
+---

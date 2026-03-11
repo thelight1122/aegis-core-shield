@@ -1,0 +1,9 @@
+src/adapters/openclaw-adapter.ts(3,39): error TS2459: Module '"../shared/main/discernment-gate"' declares 'VirtueScores' locally, but it is not exported.
+src/adapters/openclaw-adapter.ts(6,10): error TS2459: Module '"../shared/main/ids-processor"' declares 'IDSResult' locally, but it is not exported.
+src/index.ts(7,39): error TS2459: Module '"./shared/main/discernment-gate"' declares 'ReturnPacket' locally, but it is not exported.
+src/index.ts(7,53): error TS2459: Module '"./shared/main/discernment-gate"' declares 'VirtueScores' locally, but it is not exported.
+src/index.ts(10,45): error TS2459: Module '"./shared/main/ids-processor"' declares 'IDSResult' locally, but it is not exported.
+src/main/ids.ts(6,33): error TS2459: Module '"../shared/main/ids-processor"' declares 'IDSResult' locally, but it is not exported.
+src/renderer/types/ide.ts(1,10): error TS2459: Module '"../../shared/main/reflection-engine"' declares 'ReflectionSequence' locally, but it is not exported.
+src/shared/main/governance-state.ts(1,10): error TS2459: Module '"./discernment-gate"' declares 'GovernancePolicy' locally, but it is not exported.
+src/shared/main/steward-prime.ts(2,10): error TS2459: Module '"./discernment-gate"' declares 'GovernancePolicy' locally, but it is not exported.

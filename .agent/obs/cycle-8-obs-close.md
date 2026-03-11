@@ -1,5 +1,7 @@
 # Cycle 8 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -24,4 +26,5 @@
 Cycle 8 has moved AEGIS into the realm of meta-cognition. The system is no longer just a passive analyzer; it is now an observer of its own analytical trajectory.
 
 **Cycle 8 Status: CLOSED**
-═══════════════════════════════════════════════════════════
+
+---

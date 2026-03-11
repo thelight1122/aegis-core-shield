@@ -1,5 +1,7 @@
 # Cycle 6 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -24,4 +26,5 @@
 Cycle 6 has successfully unified the AEGIS swarm. Distributed agents now possess collective structural awareness without sacrificing individual governance integrity.
 
 **Cycle 6 Status: CLOSED**
-═══════════════════════════════════════════════════════════
+
+---

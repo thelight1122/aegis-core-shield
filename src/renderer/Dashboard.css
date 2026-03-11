@@ -157,7 +157,6 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
-<<<<<<< HEAD
 
 /* Steward Monitor UI Styles */
 
@@ -1738,5 +1737,4 @@
     color: #6e7681;
     white-space: nowrap;
 }
-=======
->>>>>>> f0c1b523f896860d24d8047b360c9a96cba43689
+

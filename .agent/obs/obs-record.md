@@ -34,7 +34,7 @@
 
 ---
 
-# OBS-CLOSE CYCLE RECORD
+## OBS-CLOSE CYCLE RECORD
 
 **CYCLE:** 2
 **OBS_CLOSE_DATE:** 2026-03-07
@@ -53,4 +53,5 @@
 - **Governance**: Zero directive language detected in cycle.
 
 **NEXT_STEPS:**
+
 Ready for Cycle 3: Advanced Intent Extraction (I-09) and Structural Reflection (I-10).

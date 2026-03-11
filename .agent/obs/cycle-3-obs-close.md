@@ -1,5 +1,7 @@
 # Cycle 3 Observational Record (BM-OBS CLOSE)
 
+---
+
 ## 1. Anticipation Delta
 
 | Prediction (from OBS OPEN) | Actual Outcome | Accuracy |
@@ -25,5 +27,6 @@
 
 Cycle 3 implementation of Advanced Intent Extraction and Structural Reflection is complete. Technical and Canonical integrity is verified at 100% across 40 test suites.
 
+---
+
 **Cycle 3 Status: CLOSED**
-═══════════════════════════════════════════════════════════
