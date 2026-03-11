@@ -1,16 +1,18 @@
 // src/shared/main/gate-logger.ts
-// Purpose: Append-only logging infrastructure for Discernment Gate decisions
-// Persistent file-based logging with structured JSON entries
+// Purpose: Append-only logging infrastructure for Discernment Gate evaluations
+// Persistent file-based logging with structured JSON entries, known as the PEER Tensor.
 // Adheres to AEGIS append-only axiom – logs never deleted, only appended
 
 import * as fs from 'fs';
 import * as path from 'path';
 
 export interface GateLogEntry {
+    event?: 'PEER_CAPTURE' | 'GATE_OUTCOME'; // I-04: Distinguish early capture from outcome
     timestamp: string;              // ISO 8601
     promptHash: string;             // cryptographic hash of prompt
-    integrity: 0 | 1;               // binary gate decision
-    admitted: boolean;              // true if passed, false if returned
+    raw?: string;                   // I-04: Preserved raw input for PEER capture
+    integrity?: 0 | 1;               // binary gate evaluation
+    admitted?: boolean;              // true if passed, false if returned
     virtueScores?: Record<string, number>;  // adjusted scores (if returned)
     returnPacket?: any;             // full packet (if returned)
     logLevel: 'info' | 'warning' | 'error';
@@ -39,17 +41,20 @@ export function initGateLogger(): void {
 }
 
 /**
- * Append gate decision to persistent log
+ * Append gate evaluation to persistent log (PEER Tensor)
  * Never overwrites or deletes – append-only
  */
-export function logGateDecision(entry: GateLogEntry): void {
+export function logGateEvaluation(entry: GateLogEntry): void {
     try {
-        const logLine = JSON.stringify(entry) + '\n';
+        const fullEntry = {
+            event: entry.event || 'GATE_OUTCOME',
+            ...entry
+        };
+        const logLine = JSON.stringify(fullEntry) + '\n';
         fs.appendFileSync(LOG_FILE, logLine, 'utf8');
     } catch (error) {
         console.error('[Gate Logger] Failed to append log entry:', error);
         console.error('[Gate Logger] Entry was:', entry);
-        // Non-blocking – log failure doesn't halt gate operation
     }
 }
 

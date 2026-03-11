@@ -1,0 +1,105 @@
+﻿  console.log
+    [AEGIS Controller] Listening on port 8899
+
+      at Server.<anonymous> (src/shared/main/steward-controller.ts:33:21)
+
+  console.log
+    [AEGIS Controller] Broadcasted new policy version 2
+
+      at StewardController.handleRequest (src/shared/main/steward-controller.ts:123:25)
+
+  console.log
+    [Gate Debug] Pattern: chaos, Match: false, Raw: A chaotic request
+
+      at src/shared/main/discernment-gate.ts:83:15
+          at Array.some (<anonymous>)
+
+node.exe : FAIL src/shared/
+main/broadcast-policies.tes
+t.ts
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (FAI  
+  L src/shared...olicies   
+ .test.ts:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+  Sequence 2, Cycle 3: 
+Broadcast Policies
+    √ Controller 
+distributes policy and 
+versions it (83 ms)
+    √ DiscernmentGate 
+respects GovernancePolicy 
+multipliers (2 ms)
+    × DiscernmentGate 
+respects GovernancePolicy 
+blacklists (18 ms)
+
+  ● Sequence 2, Cycle 3: 
+Broadcast Policies › 
+DiscernmentGate respects 
+GovernancePolicy blacklists
+
+    expect(received).toBe(e
+xpected) // Object.is 
+equality
+
+    Expected: "deep-return"
+    Received: "admitted"
+
+    [0m [90m 60 |[39m
+     [90m 61 |[39m       
+  [36mconst[39m res 
+[33m=[39m 
+discernmentGate([32m'A 
+chaotic 
+request'[39m[33m,[39m 
+units[33m,[39m 
+rawScores[33m,[39m 
+[35m0[39m[33m,[39m 
+[35m1.0[39m[33m,[39m 
+policy)[33m;[39m
+    
+[31m[1m>[22m[39m[90m 
+62 |[39m         expect(re
+s[33m.[39mpath)[33m.[39
+mtoBe([32m'deep-return'[3
+9m)[33m;[39m
+     [90m    |[39m       
+                   
+[31m[1m^[22m[39m
+     [90m 63 |[39m       
+  expect(res[33m.[39mfrac
+tureVirtues[[35m0[39m][3
+3m.[39mminUnit)[33m.[39m
+toBe([32m'Policy 
+Exclusion'[39m)[33m;[39m
+     [90m 64 |[39m     
+})[33m;[39m
+     [90m 65 |[39m[0m
+
+      at 
+Object.<anonymous> (src/sha
+red/main/broadcast-policies
+.test.ts:62:26)
+
+Test Suites: 1 failed, 1 
+total
+Tests:       1 failed, 2 
+passed, 3 total
+Snapshots:   0 total
+Time:        2.621 s
+Ran all test suites 
+matching /src\\shared\\main
+\\broadcast-policies.test.t
+s/i.

@@ -10,7 +10,7 @@ export { discernmentGate, GateResult, ReturnPacket, VirtueScores } from './share
 export { runIDS, identify, define, suggest, IDSResult } from './shared/main/ids-processor';
 
 // Logging infrastructure
-export { initGateLogger, logGateDecision, readRecentLogs, getLogEntryCount, GateLogEntry } from './shared/main/gate-logger';
+export { initGateLogger, logGateEvaluation, readRecentLogs, getLogEntryCount, GateLogEntry } from './shared/main/gate-logger';
 
 // Tokenization utilities
 export { tokenizeAndChunk, Unit } from './shared/main/tokenization';

@@ -1,8 +1,10 @@
-# AEGIS Technical Axioms
+# AEGIS Technical Implementation Imperatives
 
-## Core Axioms (Locked – v0.1)
+## Core Technical Constraints (Aligned with Canon v1.0)
 
-### Axiom 1: Append-Only Reality
+### Constraint 1: Append-Only Reality
+
+> *(Aligns with Imperative 7: Append, never erase)*
 
 **Principle**: All state changes are additive, never subtractive.
 
@@ -47,7 +49,7 @@
 
 **Formula**:
 
-```
+```text
 Integrity = (Honesty AND Respect AND Attention AND Affection AND Loyalty AND Trust AND Communication)
 
 If ANY virtue < 1.0 (after tolerance): Integrity = 0

@@ -68,9 +68,9 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background: #f78166;
+    background: #58a6ff;
     border-radius: 50%;
-    box-shadow: 0 0 10px #f78166;
+    box-shadow: 0 0 10px #58a6ff;
     animation: pulse 2s infinite;
 }
 

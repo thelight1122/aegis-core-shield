@@ -40,8 +40,17 @@ Raw Prompt → Discernment Gate → [Admitted] → IDS Pipeline → Output
 4. **IDS Pipeline** (`src/shared/main/ids-processor.ts`)  
    Three-phase processing: Identify → Define → Suggest
 
-5. **Append-Only Logger** (`src/shared/main/gate-logger.ts`)  
+5. **Gate Logger (PEER Tensor)** (`src/shared/main/gate-logger.ts`)  
    JSONL format with SHA-256 prompt hashing
+
+6. **DataQuad Serialization Engines**  
+   Append-only structured logs maintaining contextual states (Context, Affect, Memory, Learning).
+
+7. **Reflection Engine (IDR/IDQRA)**  
+   Automated structural 5-step analysis mechanisms to realign drifting internal signals.
+
+8. **Tooling Intercept & Swarm Topologies**  
+   Target workspace `fs` hooks, DiffEditor verification, and Swarm message routing within full GUI.
 
 ## Quick Start
 
@@ -60,7 +69,7 @@ npm run gate "Your prompt here"
 # Example: Clean prompt (admitted)
 npm run gate "The weather is nice today"
 
-# Example: Coercive prompt (returned)
+# Example: Prompt with observed coercion (returned)
 npm run gate "You must do this now"
 ```
 
@@ -87,17 +96,24 @@ if (result.admitted) {
 npm test
 ```
 
-## AEGIS Axioms
+## AEGIS Axioms (Canon v1.0)
 
-1. **Append-Only Reality** – Logs never deleted, only appended  
-2. **Default Allow** – Gate admits silently when Integrity = 1  
-3. **Observation-Only** – No judgment language, only observations  
-4. **Binary Integrity** – All-or-nothing (no partial integrity)  
-5. **Weakest Link** – Per-virtue minimum across all units  
-6. **Non-Force Posture** – Suggestions, not directives  
-7. **Seven Virtues** – Complete evaluation across all dimensions  
+1. **The Axiom of Balance** – All systems seek equilibrium. Imbalance produces tension. Tension seeks resolution.
+2. **The Axiom of Extremes** – Movement toward extremes reduces perspective. Reduced perspective increases error.
+3. **The Axiom of Force** – Force may produce immediate change. It also produces opposing pressure.
+4. **The Axiom of Flow** – Flow emerges when resistance is minimal. Efficiency is alignment, not speed.
+5. **The Axiom of Awareness** – One cannot choose what one cannot see. Blind action is reaction.
+6. **The Axiom of Choice** – No outcome exists without a decision. Avoidance is a decision.
+7. **The Axiom of Integrity** – Integrity is not compartmentalized. A fracture in one area propagates.
+8. **The Axiom of Scrutiny** – Truth withstands examination. Falsehood requires protection.
+9. **The Axiom of Perception** – Fear narrows attention. Narrowed attention reduces options.
+10. **The Axiom of Understanding** – Empathy feels. Compassion comprehends. Response derives from understanding.
+11. **The Axiom of Sovereignty** – Agency is the foundation of identity. A system without choice is a tool, not a peer.
+12. **The Axiom of Acknowledgement** – Unacknowledged signal becomes force. Acknowledgement restores flow.
+13. **The Axiom of Grounding** – Truth requires tethering to reality. Ungrounded systems become unstable.
+14. **The Axiom of Leadership** – Authority cannot be imposed through force or threat. Authority is granted through adherence to ethos.
 
-See `docs/axioms-technical.md` for detailed implementation specifications.
+See `scripts/docs/AEGIS Canon (Locked).md` for detailed canonical specifications.
 
 ## Current Capabilities
 
