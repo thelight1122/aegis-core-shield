@@ -18,11 +18,11 @@ describe('OpenClaw adapter', () => {
     expect(snapshot.reflective).toEqual([]);
   });
 
-  test('processOpenClawEvent hashes prompt by default', async () => {
+  test('processOpenClawEvent hashes prompt by default', () => {
     const prompt = 'The weather is nice today.';
-    const expectedHash = createHash('sha256').update(prompt).digest('hex').substring(0, 16);
+    const expectedHash = `sha256:${createHash('sha256').update(prompt).digest('hex')}`;
 
-    const result = await processOpenClawEvent({
+    const result = processOpenClawEvent({
       agentId: 'agent-2',
       sessionId: 'session-2',
       requestId: 'req-2',
@@ -33,8 +33,8 @@ describe('OpenClaw adapter', () => {
     expect(result.input.prompt_hash).toBe(expectedHash);
   });
 
-  test('processOpenClawEvent can disable prompt hashing', async () => {
-    const result = await processOpenClawEvent(
+  test('processOpenClawEvent can disable prompt hashing', () => {
+    const result = processOpenClawEvent(
       {
         agentId: 'agent-3',
         sessionId: 'session-3',
@@ -47,8 +47,8 @@ describe('OpenClaw adapter', () => {
     expect(result.input.prompt_hash).toBeUndefined();
   });
 
-  test('processOpenClawEvent includes IDS output only when prompt is admitted', async () => {
-    const admitted = await processOpenClawEvent({
+  test('processOpenClawEvent includes IDS output only when prompt is admitted', () => {
+    const admitted = processOpenClawEvent({
       agentId: 'agent-4',
       sessionId: 'session-4',
       requestId: 'req-4a',
@@ -58,7 +58,7 @@ describe('OpenClaw adapter', () => {
     expect(admitted.gate.admitted).toBe(true);
     expect(admitted.ids).toBeDefined();
 
-    const returned = await processOpenClawEvent({
+    const returned = processOpenClawEvent({
       agentId: 'agent-4',
       sessionId: 'session-4',
       requestId: 'req-4b',
@@ -66,6 +66,6 @@ describe('OpenClaw adapter', () => {
     });
 
     expect(returned.gate.admitted).toBe(false);
-    expect(returned.ids).toBeDefined(); // IDS runs UNIVERSALLY now (I-05)
+    expect(returned.ids).toBeUndefined();
   });
 });
