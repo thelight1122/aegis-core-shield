@@ -7,7 +7,7 @@
 - **CYCLE_OUTCOME:** SUCCESS
 - **RETURN_COUNT:** 0
 
-## Anticipation Delta
+## 1. Anticipation Delta
 
 - **CONFIRMED:** IDS-GATE-INVERSION-REGRESSION (Absent), COLOUR-VALENCE-DRIFT-RECURRENCE (Absent)
 - **NOT_FOUND:** IDS-GATE-INVERSION (checked ids-processor.ts), COLOUR-VALENCE-DRIFT (checked NebulaMirror.tsx)
@@ -15,13 +15,13 @@
 - **ACCURACY_RATING:** MODERATE
 - **ACCURACY_NOTE:** Structural shifts (async CLI, hash truncation) emerged as secondary signals of the Cycle 1 refactor's stabilization phase.
 
-## Pattern Register Update
+## 2. Pattern Register Update
 
 - **PATTERN:** IDS-GATE-INVERSION
   - **PRIOR_COUNT:** 0
   - **NEW_COUNT:** 0
   - **STATUS:** RESOLVED
-  
+
 - **PATTERN:** COLOUR-VALENCE-DRIFT
   - **PRIOR_COUNT:** 0
   - **NEW_COUNT:** 0
@@ -41,13 +41,13 @@
   - **LOCATION_UPDATE:** src/shared/main/gate-logger.ts
   - **SIGNATURE_UPDATE:** Transition to 16-char hex hash without 'sha256:' prefix.
 
-## State Updates
+## 3. State Updates
 
 - **LANGUAGE_DRIFT_UPDATE:** NONE
 - **ARCH_DRIFT_UPDATE:** ASYNC-PIPELINE-TRANSITION (Successful architectural shift to async orchestrator).
 - **AGENT_DRIFT_UPDATE:** NONE
 
-## Summary
+## 4. Summary
 
 Cycle 2 has successfully solidified the architectural refactor from Cycle 1. While core governance and pipeline patterns remain stable, secondary structural drifts (CLI sync and Hashing) emerged as the system aligned its utility layers with the new async core. These are now modeled and registered. The system enters Cycle 3 in a highly stable, high-integrity state.
 
