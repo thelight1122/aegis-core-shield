@@ -6,6 +6,7 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" \"npm run prime\" \"run-s wait-dev dev:electron\"",
+        "dev:full": "npm run dev",
         "wait-dev": "wait-on http://localhost:3000",
         "dev:electron": "cross-env NODE_ENV=development electron .",
         "dev:renderer": "vite",
@@ -21,10 +22,7 @@
         "test:watch": "jest --watch",
         "clean": "rimraf dist",
         "typecheck": "tsc --noEmit",
-        "steward": "ts-node src/cli/steward-server.ts",
-        "probe": "ts-node scripts/test-probe.ts",
-        "probe:medium": "ts-node scripts/test-probe.ts --risk medium",
-        "probe:high": "ts-node scripts/test-probe.ts --risk high"
+        "steward": "ts-node src/cli/steward-server.ts"
     },
     "keywords": [
         "aegis",
