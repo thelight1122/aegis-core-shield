@@ -1,14 +1,14 @@
 # AEGIS Issue Manifest — Cycle 1
 
-# File: .agent/skills/aegis-issue-manifest/SKILL.md
+## File: .agent/skills/aegis-issue-manifest/SKILL.md
 
-# Scope: Workspace skill — loaded on demand when agents need issue detail
+## Scope: Workspace skill — loaded on demand when agents need issue detail
 
-# Loaded by: BM-DIAG, BM-DEV, BM-QA
+## Loaded by: BM-DIAG, BM-DEV, BM-QA
 
 ---
 
-## I-01 — User Guide: Prohibited Language
+## I-01 — User Guide: Out of Parameter Language
 
 **Tier:** DOC  
 **File:** docs/USERGUIDE.md
@@ -37,7 +37,7 @@
 
 ---
 
-## I-03 — Technical Docs: 'enforce' Prohibited
+## I-03 — Technical Docs: 'enforce' Out of Parameter
 
 **Tier:** DOC  
 **File:** docs/TECHNICAL.md
@@ -155,7 +155,7 @@ export interface ReturnPacket {
 **Tier:** UI  
 **Files:** Dashboard.tsx, Dashboard.css
 
-**Problem:** Hue shifts (red/amber/green) per integrity score encode good/bad valence — prohibited by Widget UI Guardrails.
+**Problem:** Hue shifts (red/amber/green) per integrity score encode good/bad valence — Out of Parameters by Widget UI Guardrails.
 
 | Current (OUT OF SPEC)                        | Required Replacement                                                                 |
 | -------------------------------------------- | ------------------------------------------------------------------------------------ |
