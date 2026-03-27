@@ -7,6 +7,8 @@
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 import React, { useState } from 'react';
 import MirrorPrimeDashboard from './components/MirrorPrimeDashboard';
 import OpenClawSidecar from './components/OpenClawSidecar';
@@ -112,6 +114,10 @@ export default function Dashboard() {
     );
 }
 =======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 =======
 >>>>>>> theirs
 =======
@@ -312,6 +318,12 @@ export default function Dashboard() {
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 =======
 >>>>>>> theirs

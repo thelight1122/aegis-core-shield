@@ -32,7 +32,13 @@ AEGIS can log DataQuad snapshots alongside the discernment results to preserve *
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 =======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 =======
 >>>>>>> theirs
 =======
@@ -119,6 +125,12 @@ The mode selector is available in the GUI dashboard (`src/renderer/Dashboard.tsx
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 =======
 >>>>>>> theirs
@@ -158,7 +170,13 @@ Agentic IDE → AEGIS Gate → IDS Output → Agentic Fleet (tools)
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 =======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 =======
 >>>>>>> theirs
 =======
@@ -215,6 +233,12 @@ curl -X POST http://127.0.0.1:8787/openclaw/event \
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 =======
 >>>>>>> theirs
@@ -248,7 +272,13 @@ curl -X POST http://127.0.0.1:8787/openclaw/event \
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 =======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 =======
 >>>>>>> theirs
 =======
@@ -320,6 +350,12 @@ Notes:
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 =======
 >>>>>>> theirs
@@ -354,8 +390,18 @@ Notes:
 <<<<<<< ours
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 - Define a DataQuad schema for JSONL logging.
 - Add a lightweight local API server (v0.2+).
+=======
+- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
+- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
+>>>>>>> theirs
+=======
+- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
+- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
+>>>>>>> theirs
 =======
 - ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
 - ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
