@@ -1,5 +1,14 @@
 import { createHash } from 'crypto';
 
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 import { discernmentGate, GateResult, VirtueScores, createReturnPacket } from '../shared/main/discernment-gate';
 
 import { DataQuadSnapshot } from './dataquad-schema';
@@ -12,6 +21,52 @@ import { scoreAffection } from '../shared/main/virtue-scoring-affection';
 import { scoreLoyalty } from '../shared/main/virtue-scoring-loyalty';
 import { scoreTrust } from '../shared/main/virtue-scoring-trust';
 import { scoreCommunication } from '../shared/main/virtue-scoring-communication';
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+import { discernmentGate, GateResult } from '../shared/main/discernment-gate';
+
+import { DataQuadSnapshot } from './dataquad-schema';
+import { IDSResult, runIDS } from '../shared/main/ids-processor';
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 
 export interface OpenClawEvent {
   agentId: string;
@@ -90,6 +145,15 @@ export const processOpenClawEvent = (
   event: OpenClawEvent,
   options: OpenClawAdapterOptions = {}
 ): OpenClawLogEntry => {
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
   const units = tokenizeAndChunk(event.prompt);
   const rawScores: VirtueScores = {
     Honesty: Math.min(...units.map(u => scoreHonesty(u))),
@@ -110,6 +174,42 @@ export const processOpenClawEvent = (
     admitted,
     payload: admitted ? event.prompt : createReturnPacket(event.prompt, gate.path as any, gate.adjustedScores, gate.fractureVirtues, idsResult)
   };
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
+=======
+  const gateResult = discernmentGate(event.prompt);
+  const idsResult = gateResult.admitted ? runIDS(gateResult.payload as string) : undefined;
+>>>>>>> theirs
 
   return buildOpenClawLogEntry(event, gateResult, idsResult, options);
 };

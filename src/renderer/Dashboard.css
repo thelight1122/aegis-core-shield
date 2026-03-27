@@ -151,6 +151,15 @@
 @keyframes pulse {
     0%, 100% { transform: scale(1); opacity: 0.6; }
     50% { transform: scale(1.05); opacity: 0.9; }
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 }
 
 @keyframes rotate {
@@ -1738,3 +1747,67 @@
     white-space: nowrap;
 }
 
+=======
+}
+
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+=======
+}
+
+>>>>>>> theirs
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
