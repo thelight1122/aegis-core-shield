@@ -19,6 +19,7 @@ import * as dbModule from './db/database';
 import { saveAgentToDb, loadAgentFromDb, loadSwarmMemories, loadSwarmLearnings, loadSwarmAffects } from './db/database';
 import * as crypto from 'crypto';
 import { activeGovernancePolicy } from './governance-state';
+import { buildCoreMarkers, evaluateOpenClawCore, summarizeCoreIntake } from './core-engine-bridge';
 
 
 /**
@@ -105,6 +106,7 @@ export function identify(prompt: string): IDSResult {
     const observations: string[] = [];
     const lower = prompt.toLowerCase();
     const words = lower.split(/\s+/).filter(w => w.length > 2);
+    const core = evaluateOpenClawCore({ signal: prompt, contextLabel: 'identify' });
 
     // Advanced Intent Analysis (I-09)
     const intent = calculateIntentSignals(prompt, words);
@@ -141,6 +143,7 @@ export function identify(prompt: string): IDSResult {
     observations.push(`Virtue Tie-Back: Trust is ${trustTie}`);
     observations.push(`Virtue Tie-Back: Communication is ${communicationTie}`);
     observations.push(`Prompt length: ${words.length} words (filtered)`);
+    observations.push(...summarizeCoreIntake(core));
 
     return {
         phase: 'identify',
@@ -298,6 +301,15 @@ export function suggest(defineResult: IDSResult, path: IDSPath, scores?: Record<
 
     observations.push(...suggestions);
 
+    const core = evaluateOpenClawCore({
+        signal: defineResult.input,
+        contextLabel: 'suggest',
+        markers: buildCoreMarkers(path, scores),
+        outputDraft: suggestions.join('\n')
+    });
+    observations.push(...summarizeCoreIntake(core));
+    observations.push(`Core RPC Status: ${core.rpc.ok ? 'passed' : 'review-needed'}`);
+
     return {
         phase: 'suggest',
         input: defineResult.input,
@@ -381,6 +393,13 @@ export async function processPrompt(rawPrompt: string, agentId: string = 'defaul
     }
     const { path, integrity, adjustedScores, fractureVirtues } = discernmentGate(rawPrompt, units, rawScores, localCoherence, swarmCoherence, activeGovernancePolicy);
 
+    const coreMarkers = buildCoreMarkers(path, adjustedScores as Record<string, number>, fractureVirtues);
+    const coreRun = evaluateOpenClawCore({
+        signal: rawPrompt,
+        contextLabel: 'process-prompt',
+        markers: coreMarkers
+    });
+
     // 4. Universal IDS Flow (I-05 / I-13 mirroring)
     const idsResult = runIDS(rawPrompt, path, adjustedScores as Record<string, number>, agent);
 
@@ -413,6 +432,13 @@ export async function processPrompt(rawPrompt: string, agentId: string = 'defaul
             promptHash: hash,
             integrity: 1,
             admitted: true,
+            returnPacket: {
+                core: {
+                    idsSequence: coreRun.ids.sequence,
+                    envelope: coreRun.carrier.mode,
+                    pimMarkers: coreRun.pim.markers
+                }
+            },
             logLevel: 'info'
         });
         return { ...idsResult, integrity };
