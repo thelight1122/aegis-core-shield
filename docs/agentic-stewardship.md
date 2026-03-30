@@ -1,10 +1,10 @@
-# Agentic Stewardship Integration (Draft)
+# Agentic Stewardship Integration
 
-This document outlines how **AEGIS Core Shield** can serve as a non-force governance steward for agentic systems (e.g., OpenClaw) and their multi-agent fleets. The intent is to run AEGIS alongside an Agentic IDE, protecting integrity while preserving recursive learning memory across each agent’s **DataQuad** (temporal, contextual, affective, and reflective memory).
+This document outlines how **AEGIS Core Shield** can serve as a non-force governance steward for agentic systems such as OpenClaw and their multi-agent fleets. The intent is to run AEGIS alongside an Agentic IDE, protecting integrity while preserving recursive learning memory across each agent’s **DataQuad**.
 
 ## Steward Responsibilities
 
-AEGIS acts as a **steward layer** between agent requests and tool execution:
+AEGIS acts as a stewardship layer between agent requests and tool execution:
 
 1. **Discernment Gate** checks incoming prompts for seven-virtue integrity.
 2. **IDS Pipeline** outputs non-force observations and suggestions.
@@ -21,50 +21,18 @@ Each agent maintains a DataQuad bundle:
 | Affective | Tone and sentiment resonance | trust/affection deltas |
 | Reflective | Self-assessment and lessons | what worked, what broke |
 
-AEGIS can log DataQuad snapshots alongside the discernment results to preserve **recursive learning memory** without enforcing any directive behavior.
+AEGIS can log DataQuad snapshots alongside discernment results to preserve recursive learning memory without enforcing directive behavior.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 ### DataQuad Snapshot Shape
 
 Minimum recommended fields for each DataQuad snapshot:
 
 | Field | Required | Notes |
 | --- | --- | --- |
-| `temporal` | ✅ | Arrays of time-ordered events or intervals |
-| `contextual` | ✅ | Repo, workspace, dependencies, or tool context |
-| `affective` | ✅ | Sentiment/affect signals (scaled or categorical) |
-| `reflective` | ✅ | Lessons, constraints, or self-assessment |
+| `temporal` | Yes | Arrays of time-ordered events or intervals |
+| `contextual` | Yes | Repo, workspace, dependencies, or tool context |
+| `affective` | Yes | Sentiment or affect signals |
+| `reflective` | Yes | Lessons, constraints, or self-assessment |
 
 ### Draft JSONL Envelope
 
@@ -110,106 +78,43 @@ This layout keeps every decision auditable while allowing agents to replay or su
 
 ## Runtime Modes
 
-AEGIS now supports two runtime choices for developers:
+AEGIS currently supports these runtime choices:
 
-1. **Alongside OpenClaw**: Run AEGIS as a steward sidecar and ingest OpenClaw events over the local HTTP interface.
-2. **AEGIS Agentic IDE**: Run in native AEGIS IDE mode with steward-managed agent cards (Steward, Research, Builder) under the same discernment gate flow.
+1. **Alongside OpenClaw**: run AEGIS as a steward sidecar and ingest OpenClaw events over the local HTTP interface.
+2. **AEGIS Agentic IDE**: run in native AEGIS IDE mode with steward-managed agent cards under the same discernment gate flow.
+3. **Mirror Prime**: observe the broader swarm and continuity surfaces.
 
-The mode selector is available in the GUI dashboard (`src/renderer/Dashboard.tsx`).
+The mode selector is available in `src/renderer/Dashboard.tsx`.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 ## Co-Running with an Agentic IDE
 
 Recommended runtime topology:
 
 ```text
-Agentic IDE → AEGIS Gate → IDS Output → Agentic Fleet (tools)
-                      ↘  Append-only Logs (DataQuad + IDS)
+Agentic IDE -> AEGIS Gate -> IDS Output -> Agentic Fleet (tools)
+                     \-> Append-only Logs (DataQuad + IDS)
 ```
 
-- **Local process**: Run AEGIS in a sidecar process.
-- **IPC**: Use a local socket/HTTP endpoint (v0.2+ planned).
-- **Persistence**: Append-only JSONL logs for safe replay and time-based audits.
+- **Local process**: run AEGIS in a sidecar process.
+- **IPC / HTTP**: use a local socket or HTTP endpoint.
+- **Persistence**: append-only JSONL logs for replay and audit.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 ### Minimal Integration Steps
 
-1. **Initialize**: Provide `agent_id` and `session_id` to AEGIS.
-2. **Send**: Submit prompt + tool intent to the Discernment Gate.
-3. **Gate**: Respect `admitted` vs. `returned` decisions.
-4. **Persist**: Append DataQuad snapshots + IDS output to JSONL.
-5. **Replay**: Periodically summarize or replay DataQuad history.
+1. Initialize with `agent_id` and `session_id`.
+2. Send prompt plus tool intent to the Discernment Gate.
+3. Respect `admitted` versus `returned` outcomes.
+4. Persist DataQuad snapshots plus IDS output to JSONL.
+5. Periodically replay or summarize DataQuad history.
 
+### Local Steward Server
 
-### Local Steward Server (Step 3)
-
-A minimal ingestion interface is now available:
+A minimal ingestion interface is available:
 
 - CLI entrypoint: `npm run steward`
 - Health check: `GET /health`
 - Event ingest: `POST /openclaw/event`
-- Append-only log file: `data/adapter-logs/openclaw-events.jsonl` (or `AEGIS_ADAPTER_LOG_DIR` override)
+- Append-only log file: `data/adapter-logs/openclaw-events.jsonl`
 
 Example request:
 
@@ -225,82 +130,19 @@ curl -X POST http://127.0.0.1:8787/openclaw/event \
   }'
 ```
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-## Fleet Stewarding Workflow (High-Level)
+## Fleet Stewarding Workflow
 
-1. **Intake**: Agent sends prompt + metadata (agent id, tool intent).
-2. **Discern**: Gate scores virtues, admits or returns.
-3. **Record**: Log decision + DataQuad snapshot.
-4. **Reflect**: IDS output is stored and optionally fed into the agent memory stack.
+1. **Intake**: the agent sends prompt plus metadata.
+2. **Discern**: the gate scores virtues and admits or returns.
+3. **Record**: the decision and DataQuad snapshot are logged.
+4. **Reflect**: IDS output is stored and can be fed back into memory.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 ## Stewarding Boundaries
 
-- **No force**: AEGIS does not override or coerce the agent. It only observes and suggests.
-- **Memory integrity**: DataQuad writes are append-only and immutable once persisted.
-- **Agent ownership**: Each agent owns its DataQuad and can choose how to replay or summarize it.
-- **Privacy-by-default**: Store prompt hashes, not raw prompts, unless explicitly configured.
+- **No force**: AEGIS does not override or coerce the agent.
+- **Memory integrity**: DataQuad writes are append-only.
+- **Agent ownership**: each agent owns its DataQuad and decides how to replay or summarize it.
+- **Privacy by default**: store prompt hashes, not raw prompts, unless explicitly configured.
 
 ## OpenClaw Adapter Skeleton
 
@@ -309,12 +151,11 @@ Use the adapter skeleton in `src/adapters/openclaw-adapter.ts` as a starting poi
 - Map OpenClaw events to `OpenClawEvent`.
 - Use `processOpenClawEvent` to run the gate and IDS pipeline.
 - Persist the returned `OpenClawLogEntry` to append-only JSONL.
-- Expand the DataQuad mapping to include your fleet’s domain-specific signals.
+- Expand the DataQuad mapping with your fleet’s domain-specific signals.
 
+## OpenClaw Integration Example
 
-## OpenClaw Integration Example (Copy/Paste)
-
-Use the public API to ingest an event directly (without HTTP):
+Use the public API to ingest an event directly without HTTP:
 
 ```ts
 import { ingestOpenClawEvent } from 'aegis-core-shield';
@@ -329,113 +170,29 @@ const entry = ingestOpenClawEvent({
     temporal: ['t:2026-02-10T10:00:00Z'],
     contextual: ['repo:aegis-core-shield'],
     affective: ['calm'],
-    reflective: ['previous search succeeded'],
-  },
+    reflective: ['previous search succeeded']
+  }
 });
 
-console.log(entry.gate.admitted); // true|false
-console.log(entry.ids); // present only when admitted
+console.log(entry.gate.admitted);
+console.log(entry.ids);
 ```
 
 Notes:
-- By default, prompts are hashed (`sha256`) and stored as `input.prompt_hash`.
-- Records are appended to `data/adapter-logs/openclaw-events.jsonl`.
-- Set `AEGIS_ADAPTER_LOG_DIR` to override log destination.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
+- prompts are hashed with `sha256` by default and stored as `input.prompt_hash`
+- records are appended to `data/adapter-logs/openclaw-events.jsonl`
+- set `AEGIS_ADAPTER_LOG_DIR` to override the log destination
+
 ## Integration Notes
 
-- **Non-force posture**: Returned prompts include observations, never commands.
-- **Binary integrity**: All seven virtues must pass for admission.
-- **Append-only invariants**: Logs remain immutable to preserve integrity.
+- **Non-force posture**: returned prompts include observations, never commands.
+- **Binary integrity**: all seven virtues must pass for admission.
+- **Append-only invariants**: logs remain immutable to preserve integrity.
 
 ## Next Steps
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-- Define a DataQuad schema for JSONL logging.
-- Add a lightweight local API server (v0.2+).
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-=======
-- ✅ Define a DataQuad schema for JSONL logging (`src/adapters/dataquad-schema.ts`).
-- ✅ Add a lightweight local API server (`src/adapters/openclaw-ingest.ts`, `npm run steward`).
->>>>>>> theirs
-- Provide adapters for OpenClaw and other agentic frameworks.
+- Done: define a DataQuad schema for JSONL logging in `src/adapters/dataquad-schema.ts`.
+- Done: add a lightweight local API server in `src/adapters/openclaw-ingest.ts` and `npm run steward`.
+- Next: provide adapters for OpenClaw and other agentic frameworks.
+- Next: replace local-only sidecar assumptions with the live AEGIS Core service when integration begins.

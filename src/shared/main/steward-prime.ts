@@ -44,6 +44,7 @@ export class StewardPrime {
             console.log(`[AEGIS Prime] Listening on port ${port}`);
             // Start polling every 30s
             this.pollingInterval = setInterval(() => this.pollStewards(), 30000);
+            this.pollingInterval.unref();
         });
     }
 

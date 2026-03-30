@@ -3,9 +3,9 @@ import * as http from 'http';
 
 describe('Sequence 2, Cycle 5: Swarm-Wide Reflection', () => {
     let prime: StewardPrime;
-    const primePort = 8901;
+    const primePort = 8911;
     let mockSteward: http.Server;
-    const stewardPort = 8902;
+    const stewardPort = 8912;
     let reflectionReceived = false;
 
     beforeAll(async () => {

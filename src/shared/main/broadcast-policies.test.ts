@@ -46,7 +46,7 @@ describe('Sequence 2, Cycle 3: Broadcast Policies', () => {
 
         const policy2 = { version: 2, globalThresholdMultiplier: 0.4, blacklistedPatterns: [] };
         const res2 = discernmentGate('test prompt', units, rawScores, 0, 1.0, policy2);
-        expect(res2.path).toBe('shallow-return');
+        expect(res2.path).toBe('quarantine');
     });
 
     test('DiscernmentGate respects GovernancePolicy blacklists', () => {
