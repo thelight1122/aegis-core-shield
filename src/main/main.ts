@@ -3,18 +3,105 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as util from 'util';
 import * as http from 'http';
+import * as https from 'https';
+import { execFile } from 'child_process';
 import { processPrompt } from './ids';
 import { initDatabase, saveAgentToDb, loadAgentFromDb, getSystemMetrics } from '../shared/main/db/database';
 import { sendAlert, configureWebhook } from '../shared/main/webhook-alerts';
 
 let lastWorkspacePath: string | null = null;
 
-const execPromise = util.promisify(() => { }); // Placeholder or just remove if util isn't used elsewhere 
-// Actually util is used for promisify but we don't need it if we removed exec.
+const execFileAsync = util.promisify(execFile);
 
 
 const ADAPTER_LOG_DIR = process.env.AEGIS_ADAPTER_LOG_DIR || path.join(process.cwd(), 'data', 'adapter-logs');
 const OPENCLAW_LOG_FILE = path.join(ADAPTER_LOG_DIR, 'openclaw-events.jsonl');
+const DEFAULT_CORE_URL = process.env.AEGIS_CORE_URL || 'https://aegiscustodianhandshake-730882928549.us-west1.run.app';
+
+type CoreRequestOptions = {
+    method?: 'GET' | 'POST';
+    body?: unknown;
+};
+
+let cachedIdentityToken: { value: string; expiresAt: number } | null = null;
+
+function isLocalCoreUrl(url: URL) {
+    return ['127.0.0.1', 'localhost'].includes(url.hostname);
+}
+
+async function getCoreAuthHeaders(targetUrl: URL) {
+    if (isLocalCoreUrl(targetUrl)) {
+        return {};
+    }
+
+    const presetToken = process.env.AEGIS_CORE_IDENTITY_TOKEN;
+    if (presetToken) {
+        return { Authorization: `Bearer ${presetToken}` };
+    }
+
+    if (cachedIdentityToken && cachedIdentityToken.expiresAt > Date.now()) {
+        return { Authorization: `Bearer ${cachedIdentityToken.value}` };
+    }
+
+    try {
+        const { stdout } = await execFileAsync('gcloud', ['auth', 'print-identity-token']);
+        const token = stdout.trim();
+        if (!token) {
+            throw new Error('No identity token returned by gcloud.');
+        }
+        cachedIdentityToken = {
+            value: token,
+            expiresAt: Date.now() + 5 * 60 * 1000
+        };
+        return { Authorization: `Bearer ${token}` };
+    } catch (error: any) {
+        throw new Error(`Unable to acquire Core service identity token. Start the Cloud Run proxy or sign in with gcloud. ${error.message}`);
+    }
+}
+
+async function coreRequest(routePath: string, options: CoreRequestOptions = {}) {
+    const targetUrl = new URL(routePath, DEFAULT_CORE_URL.endsWith('/') ? DEFAULT_CORE_URL : `${DEFAULT_CORE_URL}/`);
+    const headers = await getCoreAuthHeaders(targetUrl);
+    const payload = options.body === undefined ? undefined : JSON.stringify(options.body);
+    const client = targetUrl.protocol === 'https:' ? https : http;
+
+    return new Promise<any>((resolve, reject) => {
+        const req = client.request(targetUrl, {
+            method: options.method || 'GET',
+            headers: {
+                Accept: 'application/json',
+                ...(payload ? { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) } : {}),
+                ...headers
+            }
+        }, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                const statusCode = res.statusCode || 500;
+                const parsed = data.length > 0 ? (() => {
+                    try {
+                        return JSON.parse(data);
+                    } catch {
+                        return { ok: false, error: data };
+                    }
+                })() : {};
+
+                if (statusCode >= 400) {
+                    reject(new Error(typeof parsed?.error === 'string' ? parsed.error : `Core request failed with status ${statusCode}`));
+                    return;
+                }
+
+                resolve(parsed);
+            });
+        });
+
+        req.on('error', reject);
+        if (payload) {
+            req.write(payload);
+        }
+        req.end();
+    });
+}
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -105,6 +192,55 @@ ipcMain.handle('aegis:fetchStewardLogs', async (_: IpcMainInvokeEvent, limit: nu
     } catch (error) {
         console.error('Failed to fetch steward logs:', error);
         return [];
+    }
+});
+
+ipcMain.handle('aegis:fetchCoreHealth', async () => {
+    try {
+        return await coreRequest('/health');
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
+ipcMain.handle('aegis:fetchCoreSessions', async () => {
+    try {
+        return await coreRequest('/sessions');
+    } catch (error: any) {
+        return { ok: false, error: error.message, sessions: [] };
+    }
+});
+
+ipcMain.handle('aegis:fetchCoreSessionSummary', async (_: IpcMainInvokeEvent, sessionId: string) => {
+    try {
+        return await coreRequest(`/session-summary/${encodeURIComponent(sessionId)}`);
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
+ipcMain.handle('aegis:seedCoreSession', async (_: IpcMainInvokeEvent, sessionId?: string) => {
+    try {
+        return await coreRequest('/seed', {
+            method: 'POST',
+            body: sessionId ? { sessionId } : {}
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
+ipcMain.handle('aegis:runCoreScan', async (_: IpcMainInvokeEvent, sessionId: string, signal?: string) => {
+    try {
+        return await coreRequest('/scan', {
+            method: 'POST',
+            body: {
+                sessionId,
+                signal: signal || 'Assess current session state for continuity and drift.'
+            }
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
     }
 });
 
