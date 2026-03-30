@@ -329,6 +329,41 @@
     color: #ffb4ae;
 }
 
+.core-monitor-panel {
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.core-monitor-panel.is-healthy {
+    border-color: rgba(34, 197, 94, 0.28);
+}
+
+.core-monitor-panel.is-error {
+    border-color: rgba(248, 81, 73, 0.3);
+}
+
+.core-monitor-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+.core-monitor-message {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.core-monitor-meta {
+    margin-top: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
 .core-sidecar-layout {
     display: grid;
     grid-template-columns: 320px minmax(0, 1fr);
@@ -347,6 +382,59 @@
 .core-session-list,
 .core-session-detail {
     padding: 18px;
+}
+
+.core-activity-panel {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.core-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.core-activity-item {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.58);
+    border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.core-activity-item.status-running {
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+.core-activity-item.status-success {
+    border-color: rgba(34, 197, 94, 0.28);
+}
+
+.core-activity-item.status-error {
+    border-color: rgba(248, 81, 73, 0.3);
+}
+
+.core-activity-title-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.core-activity-title {
+    font-weight: 700;
+}
+
+.core-activity-time {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.core-activity-detail {
+    color: #cbd5e1;
+    font-size: 12px;
+    line-height: 1.4;
 }
 
 .core-panel-header {

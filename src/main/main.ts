@@ -288,6 +288,36 @@ ipcMain.handle('aegis:writeCoreSpine', async (_: IpcMainInvokeEvent, sessionId: 
     }
 });
 
+ipcMain.handle('aegis:compressCoreNCT', async (_: IpcMainInvokeEvent, sessionId: string, distilledSummary: string, sourceRecordIds?: string[], pivots?: string[]) => {
+    try {
+        return await coreRequest('/compress-to-nct', {
+            method: 'POST',
+            body: {
+                sessionId,
+                distilledSummary,
+                ...(sourceRecordIds && sourceRecordIds.length > 0 ? { sourceRecordIds } : {}),
+                ...(pivots && pivots.length > 0 ? { pivots } : {})
+            }
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
+ipcMain.handle('aegis:requestCoreSSSP', async (_: IpcMainInvokeEvent, sessionId: string, trigger?: string) => {
+    try {
+        return await coreRequest('/request-sssp', {
+            method: 'POST',
+            body: {
+                sessionId,
+                trigger: trigger || 'shield-sidecar-stewardship'
+            }
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
 ipcMain.handle('aegis:selectWorkspace', async () => {
     const result = await dialog.showOpenDialog({
         properties: ['openDirectory'],

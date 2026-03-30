@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('aegisAPI', {
   appendCorePeer: (sessionId: string, presentState: unknown) => ipcRenderer.invoke('aegis:appendCorePeer', sessionId, presentState),
   appendCorePCT: (sessionId: string, workingContext: unknown, retrievedRecordIds?: string[]) => ipcRenderer.invoke('aegis:appendCorePCT', sessionId, workingContext, retrievedRecordIds),
   writeCoreSpine: (sessionId: string, pattern: string, invariant?: boolean) => ipcRenderer.invoke('aegis:writeCoreSpine', sessionId, pattern, invariant),
+  compressCoreNCT: (sessionId: string, distilledSummary: string, sourceRecordIds?: string[], pivots?: string[]) => ipcRenderer.invoke('aegis:compressCoreNCT', sessionId, distilledSummary, sourceRecordIds, pivots),
+  requestCoreSSSP: (sessionId: string, trigger?: string) => ipcRenderer.invoke('aegis:requestCoreSSSP', sessionId, trigger),
   selectWorkspace: () => ipcRenderer.invoke('aegis:selectWorkspace'),
   readWorkspaceFile: (workspacePath: string, relativePath: string) => ipcRenderer.invoke('aegis:readWorkspaceFile', workspacePath, relativePath),
   saveAgent: (workspacePath: string, agentId: string, agentData: any) => ipcRenderer.invoke('aegis:saveAgent', workspacePath, agentId, agentData),
