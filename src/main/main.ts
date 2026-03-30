@@ -5,6 +5,8 @@ import * as util from 'util';
 import * as http from 'http';
 import * as https from 'https';
 import { execFile } from 'child_process';
+import { createStewardServer } from '../adapters/openclaw-ingest';
+import type { OpenClawEvent, OpenClawLogEntry } from '../adapters/openclaw-adapter';
 import { processPrompt } from './ids';
 import { initDatabase, saveAgentToDb, loadAgentFromDb, getSystemMetrics } from '../shared/main/db/database';
 import { sendAlert, configureWebhook } from '../shared/main/webhook-alerts';
@@ -24,6 +26,18 @@ type CoreRequestOptions = {
 };
 
 let cachedIdentityToken: { value: string; expiresAt: number } | null = null;
+let stewardBridgeServer: http.Server | null = null;
+let stewardBridgeStatus: {
+    active: boolean;
+    host: string;
+    port: number;
+    lastForwardedAt?: string;
+    lastForwardError?: string;
+} = {
+    active: false,
+    host: process.env.AEGIS_STEWARD_HOST || '127.0.0.1',
+    port: Number(process.env.AEGIS_STEWARD_PORT || 8787)
+};
 
 function isLocalCoreUrl(url: URL) {
     return ['127.0.0.1', 'localhost'].includes(url.hostname);
@@ -103,6 +117,136 @@ async function coreRequest(routePath: string, options: CoreRequestOptions = {}) 
     });
 }
 
+async function ensureCoreSession(sessionId: string) {
+    const summary = await coreRequest(`/session-summary/${encodeURIComponent(sessionId)}`).catch(() => null);
+    if (summary?.ok) {
+        return summary;
+    }
+
+    return coreRequest('/seed', {
+        method: 'POST',
+        body: { sessionId }
+    });
+}
+
+async function forwardOpenClawEventToCore(event: OpenClawEvent, entry: OpenClawLogEntry) {
+    await ensureCoreSession(event.sessionId);
+
+    const peerState = {
+        source: 'openclaw',
+        agentId: event.agentId,
+        requestId: event.requestId,
+        toolIntent: event.toolIntent || null,
+        admitted: entry.gate.admitted,
+        metadata: event.metadata || {}
+    };
+
+    const pctContext = {
+        source: 'openclaw',
+        agentId: event.agentId,
+        requestId: event.requestId,
+        promptHash: entry.input.prompt_hash,
+        toolIntent: event.toolIntent || null,
+        gateStatus: entry.gate.admitted ? 'admitted' : 'returned'
+    };
+
+    const peerResponse = await coreRequest('/append-peer', {
+        method: 'POST',
+        body: {
+            sessionId: event.sessionId,
+            presentState: peerState
+        }
+    });
+
+    const pctResponse = await coreRequest('/append-pct', {
+        method: 'POST',
+        body: {
+            sessionId: event.sessionId,
+            workingContext: pctContext
+        }
+    });
+
+    let spineResponse: any = null;
+    if (!entry.gate.admitted) {
+        spineResponse = await coreRequest('/write-spine', {
+            method: 'POST',
+            body: {
+                sessionId: event.sessionId,
+                pattern: `OpenClaw request ${event.requestId} returned by the Discernment Gate for boundary-preserving stewardship.`,
+                invariant: true
+            }
+        });
+    }
+
+    stewardBridgeStatus = {
+        ...stewardBridgeStatus,
+        active: true,
+        lastForwardedAt: new Date().toISOString(),
+        lastForwardError: undefined
+    };
+
+    return {
+        ok: true,
+        peerRecordId: peerResponse?.record?.id,
+        pctRecordId: pctResponse?.record?.id,
+        spineRecordId: spineResponse?.record?.id
+    };
+}
+
+function startStewardBridge() {
+    if (stewardBridgeServer) {
+        return;
+    }
+
+    const host = stewardBridgeStatus.host;
+    const port = stewardBridgeStatus.port;
+
+    stewardBridgeServer = createStewardServer({
+        host,
+        port,
+        hashPrompt: process.env.AEGIS_HASH_PROMPT !== 'false',
+        onEventIngested: async (event, entry) => {
+            try {
+                return await forwardOpenClawEventToCore(event, entry);
+            } catch (error: any) {
+                stewardBridgeStatus = {
+                    ...stewardBridgeStatus,
+                    active: true,
+                    lastForwardError: error.message
+                };
+                return {
+                    ok: false,
+                    error: error.message
+                };
+            }
+        }
+    });
+
+    stewardBridgeServer.on('listening', () => {
+        stewardBridgeStatus = {
+            ...stewardBridgeStatus,
+            active: true
+        };
+        console.log(`[AEGIS Steward Bridge] Listening on http://${host}:${port}/openclaw/event`);
+    });
+
+    stewardBridgeServer.on('error', (error: any) => {
+        stewardBridgeStatus = {
+            ...stewardBridgeStatus,
+            active: false,
+            lastForwardError: error.message
+        };
+        console.error('[AEGIS Steward Bridge] Failed to start:', error.message);
+    });
+
+    app.on('before-quit', () => {
+        if (stewardBridgeServer) {
+            stewardBridgeServer.close();
+            stewardBridgeServer = null;
+        }
+    });
+}
+
 function createWindow() {
     const win = new BrowserWindow({
         width: 1200,
@@ -155,6 +299,7 @@ if (!gotTheLock) {
                 }
             });
         });
+        startStewardBridge();
         createWindow();
     });
 }
@@ -193,6 +338,10 @@ ipcMain.handle('aegis:fetchStewardLogs', async (_: IpcMainInvokeEvent, limit: nu
         console.error('Failed to fetch steward logs:', error);
         return [];
     }
+});
+
+ipcMain.handle('aegis:fetchStewardBridgeStatus', async () => {
+    return stewardBridgeStatus;
 });
 
 ipcMain.handle('aegis:fetchCoreHealth', async () => {

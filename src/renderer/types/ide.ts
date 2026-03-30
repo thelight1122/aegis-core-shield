@@ -66,6 +66,7 @@ declare global {
         aegisAPI: {
             processPrompt: (prompt: string) => Promise<any>;
             fetchStewardLogs: (limit?: number) => Promise<any>;
+            fetchStewardBridgeStatus: () => Promise<any>;
             fetchCoreHealth: () => Promise<any>;
             fetchCoreSessions: () => Promise<any>;
             fetchCoreSessionSummary: (sessionId: string) => Promise<any>;

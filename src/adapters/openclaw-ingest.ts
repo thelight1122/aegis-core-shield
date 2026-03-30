@@ -10,6 +10,7 @@ const OPENCLAW_LOG_FILE = path.join(ADAPTER_LOG_DIR, 'openclaw-events.jsonl');
 export interface IngestServerOptions extends OpenClawAdapterOptions {
   port?: number;
   host?: string;
+  onEventIngested?: (event: OpenClawEvent, entry: OpenClawLogEntry) => Promise<unknown> | unknown;
 }
 
 export const initOpenClawLogger = (): void => {
@@ -73,8 +74,15 @@ export const createStewardServer = (options: IngestServerOptions = {}): http.Ser
       }
 
       const entry = ingestOpenClawEvent(event, { hashPrompt });
+      const forwardResult = options.onEventIngested
+        ? await options.onEventIngested(event, entry)
+        : undefined;
       res.writeHead(200, { 'content-type': 'application/json' });
-      res.end(JSON.stringify(entry));
+      res.end(JSON.stringify({
+        ok: true,
+        entry,
+        forwardResult,
+      }));
     } catch (error) {
       res.writeHead(400, { 'content-type': 'application/json' });
       res.end(JSON.stringify({ error: 'Invalid JSON payload' }));

@@ -70,4 +70,35 @@ describe('openclaw ingest', () => {
 
     await new Promise<void>((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
   });
+
+  test('createStewardServer invokes forwarding callback for valid events', async () => {
+    const { createStewardServer } = require('./openclaw-ingest') as typeof import('./openclaw-ingest');
+    const onEventIngested = jest.fn().mockResolvedValue({ forwarded: true });
+
+    const server = createStewardServer({ onEventIngested });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', () => resolve()));
+    const address = server.address();
+    if (!address || typeof address === 'string') {
+      throw new Error('Expected TCP address');
+    }
+
+    const response = await fetch(`http://127.0.0.1:${address.port}/openclaw/event`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        agentId: 'agent-bridge',
+        sessionId: 'session-bridge',
+        requestId: 'req-bridge',
+        prompt: 'Test companion bridge event.',
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    const parsed = await response.json();
+    expect(parsed.ok).toBe(true);
+    expect(parsed.forwardResult).toEqual({ forwarded: true });
+    expect(onEventIngested).toHaveBeenCalledTimes(1);
+
+    await new Promise<void>((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
+  });
 });

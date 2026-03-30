@@ -3,6 +3,7 @@ import { ipcRenderer, contextBridge } from 'electron';
 contextBridge.exposeInMainWorld('aegisAPI', {
   processPrompt: (prompt: string) => ipcRenderer.invoke('aegis:processPrompt', prompt),
   fetchStewardLogs: (limit?: number) => ipcRenderer.invoke('aegis:fetchStewardLogs', limit),
+  fetchStewardBridgeStatus: () => ipcRenderer.invoke('aegis:fetchStewardBridgeStatus'),
   fetchCoreHealth: () => ipcRenderer.invoke('aegis:fetchCoreHealth'),
   fetchCoreSessions: () => ipcRenderer.invoke('aegis:fetchCoreSessions'),
   fetchCoreSessionSummary: (sessionId: string) => ipcRenderer.invoke('aegis:fetchCoreSessionSummary', sessionId),

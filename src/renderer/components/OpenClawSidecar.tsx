@@ -63,6 +63,7 @@ function createActivity(action: string, status: ActivityEntry['status'], detail:
 
 export default function OpenClawSidecar() {
     const [health, setHealth] = useState<any>(null);
+    const [bridgeStatus, setBridgeStatus] = useState<any>(null);
     const [sessions, setSessions] = useState<SessionSummary[]>([]);
     const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
     const [summary, setSummary] = useState<any>(null);
@@ -117,6 +118,8 @@ export default function OpenClawSidecar() {
     const loadSessions = async (preserveSelection = true) => {
         const healthResponse = await window.aegisAPI.fetchCoreHealth();
         setHealth(healthResponse);
+        const bridgeResponse = await window.aegisAPI.fetchStewardBridgeStatus();
+        setBridgeStatus(bridgeResponse);
 
         const response = await window.aegisAPI.fetchCoreSessions();
         if (!response?.ok) {
@@ -303,6 +306,11 @@ export default function OpenClawSidecar() {
                         Selected session: <span className="mono-text">{selectedSessionId}</span>
                     </div>
                 )}
+                {bridgeStatus && (
+                    <div className="core-monitor-meta">
+                        OpenClaw bridge: <span className="mono-text">http://{bridgeStatus.host}:{bridgeStatus.port}/openclaw/event</span>
+                    </div>
+                )}
             </div>
 
             {error && (
@@ -347,6 +355,12 @@ export default function OpenClawSidecar() {
 
                     <div className="core-activity-panel">
                         <div className="core-result-header">Recent Activity</div>
+                        {bridgeStatus && (
+                            <div className="core-bridge-note">
+                                POST OpenClaw events to <span className="mono-text">http://{bridgeStatus.host}:{bridgeStatus.port}/openclaw/event</span>
+                                {bridgeStatus.lastForwardedAt ? ` • last forward ${formatTimestamp(bridgeStatus.lastForwardedAt)}` : ''}
+                            </div>
+                        )}
                         {activity.length > 0 ? (
                             <div className="core-activity-list">
                                 {activity.map((entry) => (
