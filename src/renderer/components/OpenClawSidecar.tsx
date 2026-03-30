@@ -12,6 +12,15 @@ type SessionSummary = {
 };
 
 const SCAN_SIGNAL = 'Assess current session state for continuity and drift.';
+const DEFAULT_PEER_JSON = `{
+  "status": "bootstrapped",
+  "source": "aegis-core-shield"
+}`;
+const DEFAULT_PCT_JSON = `{
+  "goal": "continue stewardship",
+  "status": "active"
+}`;
+const DEFAULT_SPINE_PATTERN = 'The session is actively stewarded through the Shield companion app.';
 
 function formatTimestamp(timestamp?: string) {
     if (!timestamp) return 'No recent activity';
@@ -34,9 +43,12 @@ export default function OpenClawSidecar() {
     const [sessions, setSessions] = useState<SessionSummary[]>([]);
     const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
     const [summary, setSummary] = useState<any>(null);
-    const [busyAction, setBusyAction] = useState<'refresh' | 'seed' | 'scan' | null>(null);
+    const [busyAction, setBusyAction] = useState<'refresh' | 'seed' | 'scan' | 'peer' | 'pct' | 'spine' | null>(null);
     const [latestResult, setLatestResult] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [peerStateInput, setPeerStateInput] = useState(DEFAULT_PEER_JSON);
+    const [pctContextInput, setPctContextInput] = useState(DEFAULT_PCT_JSON);
+    const [spinePattern, setSpinePattern] = useState(DEFAULT_SPINE_PATTERN);
 
     const selectedSession = useMemo(
         () => sessions.find((session) => session.sessionId === selectedSessionId) || null,
@@ -181,6 +193,76 @@ export default function OpenClawSidecar() {
         }
     };
 
+    const parseJsonInput = (value: string, label: string) => {
+        try {
+            return JSON.parse(value);
+        } catch {
+            throw new Error(`${label} must be valid JSON.`);
+        }
+    };
+
+    const handleAppendPeer = async () => {
+        if (!selectedSessionId) return;
+
+        try {
+            setError(null);
+            setBusyAction('peer');
+            const presentState = parseJsonInput(peerStateInput, 'PEER state');
+            const response = await window.aegisAPI.appendCorePeer(selectedSessionId, presentState);
+            if (!response?.ok) {
+                throw new Error(response?.error || 'Appending PEER failed.');
+            }
+            setLatestResult(response);
+            await loadSessions(true);
+            await loadSummary(selectedSessionId);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setBusyAction(null);
+        }
+    };
+
+    const handleAppendPCT = async () => {
+        if (!selectedSessionId) return;
+
+        try {
+            setError(null);
+            setBusyAction('pct');
+            const workingContext = parseJsonInput(pctContextInput, 'PCT working context');
+            const response = await window.aegisAPI.appendCorePCT(selectedSessionId, workingContext);
+            if (!response?.ok) {
+                throw new Error(response?.error || 'Appending PCT failed.');
+            }
+            setLatestResult(response);
+            await loadSessions(true);
+            await loadSummary(selectedSessionId);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setBusyAction(null);
+        }
+    };
+
+    const handleWriteSpine = async () => {
+        if (!selectedSessionId) return;
+
+        try {
+            setError(null);
+            setBusyAction('spine');
+            const response = await window.aegisAPI.writeCoreSpine(selectedSessionId, spinePattern.trim() || DEFAULT_SPINE_PATTERN, true);
+            if (!response?.ok) {
+                throw new Error(response?.error || 'Writing SPINE failed.');
+            }
+            setLatestResult(response);
+            await loadSessions(true);
+            await loadSummary(selectedSessionId);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setBusyAction(null);
+        }
+    };
+
     return (
         <div className="mode-panel sidecar-panel core-sidecar-panel">
             <div className="sidecar-header">
@@ -262,6 +344,50 @@ export default function OpenClawSidecar() {
                         <div className="core-metric-card">
                             <div className="core-metric-label">Lineage Depth</div>
                             <div className="core-metric-value">{summary?.lineageDepth ?? selectedSession?.lineageDepth ?? 0}</div>
+                        </div>
+                    </div>
+
+                    <div className="core-action-grid">
+                        <div className="core-action-card">
+                            <div className="core-result-header">Append PEER</div>
+                            <div className="text-muted">Capture present-state facts for the selected session.</div>
+                            <textarea
+                                className="core-action-input"
+                                value={peerStateInput}
+                                onChange={(event) => setPeerStateInput(event.target.value)}
+                                disabled={busyAction !== null || !selectedSessionId}
+                            />
+                            <button className="mode-button active core-action-button" onClick={handleAppendPeer} disabled={busyAction !== null || !selectedSessionId}>
+                                {busyAction === 'peer' ? 'Appending PEER...' : 'Append PEER'}
+                            </button>
+                        </div>
+
+                        <div className="core-action-card">
+                            <div className="core-result-header">Append PCT</div>
+                            <div className="text-muted">Track the active working context this session is carrying.</div>
+                            <textarea
+                                className="core-action-input"
+                                value={pctContextInput}
+                                onChange={(event) => setPctContextInput(event.target.value)}
+                                disabled={busyAction !== null || !selectedSessionId}
+                            />
+                            <button className="mode-button active core-action-button" onClick={handleAppendPCT} disabled={busyAction !== null || !selectedSessionId}>
+                                {busyAction === 'pct' ? 'Appending PCT...' : 'Append PCT'}
+                            </button>
+                        </div>
+
+                        <div className="core-action-card">
+                            <div className="core-result-header">Write SPINE</div>
+                            <div className="text-muted">Preserve the continuity pattern you want anchored in the lineage.</div>
+                            <textarea
+                                className="core-action-input core-action-input-short"
+                                value={spinePattern}
+                                onChange={(event) => setSpinePattern(event.target.value)}
+                                disabled={busyAction !== null || !selectedSessionId}
+                            />
+                            <button className="mode-button active core-action-button" onClick={handleWriteSpine} disabled={busyAction !== null || !selectedSessionId}>
+                                {busyAction === 'spine' ? 'Writing SPINE...' : 'Write SPINE'}
+                            </button>
                         </div>
                     </div>
 

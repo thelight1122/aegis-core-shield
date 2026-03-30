@@ -434,6 +434,45 @@
     padding: 16px;
 }
 
+.core-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.core-action-card {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.58);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.core-action-input {
+    width: 100%;
+    min-height: 140px;
+    resize: vertical;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: rgba(2, 6, 23, 0.8);
+    color: #cbd5e1;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.core-action-input-short {
+    min-height: 92px;
+}
+
+.core-action-button {
+    align-self: flex-start;
+}
+
 .core-result-header {
     font-weight: 700;
     margin-bottom: 10px;

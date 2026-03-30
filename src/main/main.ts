@@ -244,6 +244,50 @@ ipcMain.handle('aegis:runCoreScan', async (_: IpcMainInvokeEvent, sessionId: str
     }
 });
 
+ipcMain.handle('aegis:appendCorePeer', async (_: IpcMainInvokeEvent, sessionId: string, presentState: unknown) => {
+    try {
+        return await coreRequest('/append-peer', {
+            method: 'POST',
+            body: {
+                sessionId,
+                presentState
+            }
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
+ipcMain.handle('aegis:appendCorePCT', async (_: IpcMainInvokeEvent, sessionId: string, workingContext: unknown, retrievedRecordIds?: string[]) => {
+    try {
+        return await coreRequest('/append-pct', {
+            method: 'POST',
+            body: {
+                sessionId,
+                workingContext,
+                ...(retrievedRecordIds && retrievedRecordIds.length > 0 ? { retrievedRecordIds } : {})
+            }
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
+ipcMain.handle('aegis:writeCoreSpine', async (_: IpcMainInvokeEvent, sessionId: string, pattern: string, invariant?: boolean) => {
+    try {
+        return await coreRequest('/write-spine', {
+            method: 'POST',
+            body: {
+                sessionId,
+                pattern,
+                invariant: invariant ?? true
+            }
+        });
+    } catch (error: any) {
+        return { ok: false, error: error.message };
+    }
+});
+
 ipcMain.handle('aegis:selectWorkspace', async () => {
     const result = await dialog.showOpenDialog({
         properties: ['openDirectory'],

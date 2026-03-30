@@ -71,6 +71,9 @@ declare global {
             fetchCoreSessionSummary: (sessionId: string) => Promise<any>;
             seedCoreSession: (sessionId?: string) => Promise<any>;
             runCoreScan: (sessionId: string, signal?: string) => Promise<any>;
+            appendCorePeer: (sessionId: string, presentState: unknown) => Promise<any>;
+            appendCorePCT: (sessionId: string, workingContext: unknown, retrievedRecordIds?: string[]) => Promise<any>;
+            writeCoreSpine: (sessionId: string, pattern: string, invariant?: boolean) => Promise<any>;
             fetchPrimeStatus: () => Promise<any>;
             fetchPrimeImpact: () => Promise<any>;
             fetchPrimeSignals: () => Promise<any>;
