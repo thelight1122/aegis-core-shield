@@ -17,7 +17,7 @@
 
 ---
 
-### Axiom 2: Default Allow / Silent Admit
+### Constraint 2: Default Allow / Silent Admit
 
 **Principle**: System defaults to permissive state unless explicit fracture observed.
 
@@ -30,7 +30,7 @@
 
 ---
 
-### Axiom 3: Observation-Only Language
+### Constraint 3: Observation-Only Language
 
 **Principle**: All feedback is descriptive, never prescriptive or judgmental.
 
@@ -43,7 +43,7 @@
 
 ---
 
-### Axiom 4: Binary Integrity Gate
+### Constraint 4: Binary Integrity Gate
 
 **Principle**: Integrity is all-or-nothing, systemic propagation from any single fracture.
 
@@ -63,7 +63,7 @@ If ANY virtue < 1.0 (after tolerance): Integrity = 0
 
 ---
 
-### Axiom 5: Weakest Link Per Virtue
+### Constraint 5: Weakest Link Per Virtue
 
 **Principle**: Each virtue scored by minimum unit score (not average).
 
@@ -76,7 +76,7 @@ If ANY virtue < 1.0 (after tolerance): Integrity = 0
 
 ---
 
-### Axiom 6: Non-Force Posture
+### Constraint 6: Non-Force Posture
 
 **Principle**: User agency always preserved, no mandatory actions.
 
@@ -89,7 +89,7 @@ If ANY virtue < 1.0 (after tolerance): Integrity = 0
 
 ---
 
-### Axiom 7: Seven Virtues as Foundation
+### Constraint 7: Seven Virtues as Foundation
 
 **Principle**: Integrity composed of exactly seven virtues, each equally weighted.
 
@@ -151,7 +151,7 @@ If ANY virtue < 1.0 (after tolerance): Integrity = 0
 
 ## Version Lock
 
-This document defines v0.1 axioms. Any changes require major version bump and explicit user consent.
+This document defines v0.1 Constraints. Any changes require major version bump and explicit user consent.
 
 **Last Updated**: 2026-02-06  
 **Status**: Locked
